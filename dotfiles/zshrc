@@ -1,0 +1,75 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+#EXPORTS
+# export PATH=$HOME/.gem/ruby/2.6.0/bin:$PATH
+export PATH="$HOME/.rbenv/bin:$PATH"                                       # Ruby
+export ZSH="$HOME/.oh-my-zsh"                                              # OMZ
+export NVM_DIR="$HOME/.nvm"                                                # Nvm
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                           # This loads nvm
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'  # FZF gitignore
+export LANG=pt_BR.UTF-8 									                                 # Language
+export UPDATE_ZSH_DAYS=1 												                           # Days to update
+export DOTREPO="$HOME/dotfiles"
+
+#THEME
+ZSH_THEME="powerlevel10k/powerlevel10k"
+
+#POWERLEVEL THEME SETTINGS
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(ssh context dir vcs)
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator time)
+POWERLEVEL9K_SHOW_RULER=true
+
+#PLUGINS
+plugins=(git
+fast-syntax-highlighting
+zsh-autosuggestions
+autoupdate
+)
+
+source $ZSH/oh-my-zsh.sh
+
+#HISTORY OPTS
+HISTFILE=$HOME/.zsh_history
+HISTSIZE=100000
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_SAVE_NO_DUPS
+setopt HIST_REDUCE_BLANKS
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+setopt SHARE_HISTORY
+HISTIGNORE="&:ls:[bf]g:exit:reset:clear:cd:cd ..:cd..:zh"
+
+
+#ALIASES
+{%@@ if profile == "elementary" @@%}
+alias aptup="sudo apt update && sudo apt upgrade"
+alias aptclean="apt autoremove"
+{%@@ elif profile == "mac" @@%}
+alias macup="sudo softwareupdate -i -a"
+alias hbup="brew update && brew upgrade && brew cask upgrade"
+alias hbclean= "brew cleanup -n"
+alias mempurge= "sudo purge"
+{%@@ endif @@%}
+alias jkc="bundle exec jekyll clean"
+alias jks="bundle exec Jekyll serve"
+alias jkh="bundle exec jekyll serve --host 0.0.0.0"
+alias jkp="bundle exec jekyll build --profile"
+alias jkd="bundle exec jekyll doctor"
+alias bup="bundle update" 
+alias zshup="upgrade_oh_my_zsh"
+alias zshreload= "source ~/.zshrc"
+alias loadnvm=". /usr/local/opt/nvm/nvm.sh"
+alias dotdrop="$HOME/dotfiles/dotdrop.sh --cfg=$HOME/dotfiles/config.yaml"
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
+
+echo 'eval "$(rbenv init -)"' >> ~/.zlogin
+source ~/.zlogin
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

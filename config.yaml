@@ -1,0 +1,15 @@
+config:
+  backup: true
+  create: true
+  dotpath: dotfiles
+dotfiles:
+  f_zshrc:
+    src: zshrc
+    dst: ~/.zshrc
+profiles:
+  elementary:
+    dotfiles:
+    - f_zshrc
+  mac:
+    dotfiles:
+    - f_zshrc 
