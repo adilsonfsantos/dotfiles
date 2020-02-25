@@ -6,10 +6,20 @@ dotfiles:
   f_zshrc:
     src: zshrc
     dst: ~/.zshrc
+  f_zshenv:
+    src: zshenv
+    dst: ~/.zshenv
+  f_zlogin:
+    src: zlogin
+    dst: ~/.zlogin
 profiles:
   elementary:
     dotfiles:
     - f_zshrc
+    - f_zshenv
+    - f_zlogin
   mac:
     dotfiles:
-    - f_zshrc 
+    - f_zshrc
+    - f_zshenv  
+    - f_zlogin
