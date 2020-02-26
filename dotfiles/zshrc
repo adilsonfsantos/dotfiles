@@ -24,10 +24,10 @@ autoload -Uz _zinit
 export PATH="$HOME/.rbenv/bin:$PATH"                                       # Ruby
 export ZSH="$HOME/.oh-my-zsh"                                              # OMZ
 export NVM_DIR="$HOME/.nvm"                                                # Nvm
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  --no-use                         # This loads nvm
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  --no-use                 # This loads nvm
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'  # FZF gitignore
-export LANG=pt_BR.UTF-8 									                                 # Language
-export UPDATE_ZSH_DAYS=1 												                           # Days to update
+export LANG=pt_BR.UTF-8 						   # Language
+export UPDATE_ZSH_DAYS=1 						   # Days to update
 export DOTREPO="$HOME/dotfiles"
 
 #THEME
@@ -48,7 +48,7 @@ zinit load junegunn/fzf-bin
 zplugin ice wait lucid atload'_zsh_autosuggest_start'
 zplugin light zsh-users/zsh-autosuggestions
 
-zplugin ice blockf; 
+zplugin ice blockf;
 zplugin light zdharma/fast-syntax-highlighting
 
 #HISTORY OPTS
@@ -71,7 +71,7 @@ alias aptclean="apt autoremove"
 alias macup="sudo softwareupdate -i -a"
 alias hbup="brew update && brew upgrade && brew cask upgrade"
 alias hbclean= "brew cleanup -n"
-alias mempurge= "sudo purge"
+alias purge= "sudo purge"
 {%@@ endif @@%}
 alias jkc="bundle exec jekyll clean"
 alias jks="bundle exec Jekyll serve"
@@ -93,4 +93,8 @@ source $ZSH/oh-my-zsh.sh
 if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
         source /etc/profile.d/vte.sh
 fi
+{%@@ endif @@%}
+
+{%@@ if profile == "mac" @@%}
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 {%@@ endif @@%}
