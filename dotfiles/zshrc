@@ -78,7 +78,7 @@ HISTIGNORE="&:ls:[bf]g:exit:reset:clear:cd:cd ..:cd..:zh"
 #ALIASES
 {%@@ if profile == "elementary" @@%}
 alias aptup="sudo apt update && sudo apt upgrade"
-alias aptclean="apt autoremove"
+alias aptclean="sudo apt autoremove"
 {%@@ elif profile == "mac" @@%}
 alias macup="sudo softwareupdate -i -a"
 alias hbup="brew update && brew upgrade && brew cask upgrade"
