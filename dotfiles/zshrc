@@ -66,6 +66,7 @@ zplugin light zdharma/fast-syntax-highlighting
 #HISTORY OPTS
 HISTFILE=$HOME/.zsh_history
 HISTSIZE=100000
+SAVEHIST=$HISTSIZE
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_SAVE_NO_DUPS
 setopt HIST_REDUCE_BLANKS
