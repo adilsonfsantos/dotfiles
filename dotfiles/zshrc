@@ -64,16 +64,25 @@ zplugin light zsh-users/zsh-autosuggestions
 zplugin light zdharma/fast-syntax-highlighting
 
 #HISTORY OPTS
+<<<<<<< HEAD
 HISTFILE=$HOME/.zsh_history
 HISTSIZE=100000
 SAVEHIST=$HISTSIZE
+=======
+export HISTFILE=~/.zsh_history
+export HISTSIZE=100000
+export SAVEHIST=$HISTSIZE
+export HISTTIMEFORMAT="[%F %T]"
+export HISTIGNORE="&:ls:[bf]g:exit:reset:clear:cd:cd ..:cd..:zh"
+>>>>>>> Fix history in elementary
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_SAVE_NO_DUPS
 setopt HIST_REDUCE_BLANKS
-setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_FIND_NO_DUPS
 setopt HIST_IGNORE_SPACE
 setopt SHARE_HISTORY
-HISTIGNORE="&:ls:[bf]g:exit:reset:clear:cd:cd ..:cd..:zh"
+setopt INC_APPEND_HISTORY
 
 #ALIASES
 {%@@ if profile == "elementary" @@%}
