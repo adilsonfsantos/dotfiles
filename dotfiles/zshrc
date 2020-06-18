@@ -100,7 +100,9 @@ alias bup="bundle update"
 alias zinitup="zinit update"
 alias omzup="upgrade_oh_my_zsh"
 alias zshreload= "source ~/.zshrc"
-alias dotdrop="$HOME/dotfiles/dotdrop.sh --cfg=$HOME/dotfiles/config.yaml"
+alias dotdrop="$HOME/dotfiles/dotdrop.sh"
+alias dotgit="git -C $DOTREPO"
+alias dotsync="dotgit pull && dotgit add -A && dotgit commit && dotgit push; dotdrop install"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
