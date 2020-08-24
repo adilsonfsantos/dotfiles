@@ -9,9 +9,9 @@ fi
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+#   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+# fi
 
 ### Added by Zinit's installer
 ZPLG_HOME=~/.zinit
@@ -50,18 +50,24 @@ POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator time)
 POWERLEVEL9K_SHOW_RULER=true
 
 #PLUGINS
-zinit light lukechilds/zsh-nvm
+zinit snippet OMZL::git.zsh
 
 zinit ice depth=1;
 zplugin light romkatv/powerlevel10k
 
-zinit snippet OMZ::lib/git.zsh
-
 zinit ice from"gh-r" as"command"
 zinit load junegunn/fzf-bin
 
-zplugin light zsh-users/zsh-autosuggestions
-zplugin light zdharma/fast-syntax-highlighting
+zinit light denysdovhan/spaceship-prompt
+zinit light lukechilds/zsh-nvm
+
+zinit wait lucid for \
+ atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
+    zdharma/fast-syntax-highlighting \
+ blockf \
+    zsh-users/zsh-completions \
+ atload"!_zsh_autosuggest_start" \
+    zsh-users/zsh-autosuggestions
 
 #HISTORY OPTS
 HISTFILE=$HOME/.zsh_history
