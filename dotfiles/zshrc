@@ -50,7 +50,10 @@ POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator time)
 POWERLEVEL9K_SHOW_RULER=true
 
 #PLUGINS
-zinit snippet OMZL::git.zsh
+zinit wait lucid for \
+        OMZL::git.zsh \
+  atload"unalias grv" \
+        OMZP::git
 
 zinit ice depth=1;
 zplugin light romkatv/powerlevel10k
@@ -58,16 +61,16 @@ zplugin light romkatv/powerlevel10k
 zinit ice from"gh-r" as"command"
 zinit load junegunn/fzf-bin
 
-zinit light denysdovhan/spaceship-prompt
+zinit ice wait"1" lucid
 zinit light lukechilds/zsh-nvm
 
 zinit wait lucid for \
- atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
+  atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
     zdharma/fast-syntax-highlighting \
- blockf \
-    zsh-users/zsh-completions \
- atload"!_zsh_autosuggest_start" \
-    zsh-users/zsh-autosuggestions
+  atload"_zsh_autosuggest_start" \
+      zsh-users/zsh-autosuggestions \
+  blockf atpull'zinit creinstall -q .' \
+      zsh-users/zsh-completions
 
 #HISTORY OPTS
 HISTFILE=$HOME/.zsh_history
@@ -78,14 +81,14 @@ export HISTSIZE=100000
 export SAVEHIST=$HISTSIZE
 export HISTTIMEFORMAT="[%F %T]"
 export HISTIGNORE="&:ls:[bf]g:exit:reset:clear:cd:cd ..:cd..:zh"
-setopt HIST_IGNORE_ALL_DUPS
-setopt HIST_SAVE_NO_DUPS
-setopt HIST_REDUCE_BLANKS
-setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_FIND_NO_DUPS
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_IGNORE_SPACE
-setopt SHARE_HISTORY
+setopt HIST_REDUCE_BLANKS
+setopt HIST_SAVE_NO_DUPS
 setopt INC_APPEND_HISTORY
+setopt SHARE_HISTORY
 
 #ALIASES
 {%@@ if profile == "elementary" @@%}
