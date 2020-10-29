@@ -1,4 +1,5 @@
 # Flags {{{
+# If set "true" measure zsh startup performance
 # https://www.reddit.com/r/zsh/comments/877oty/how_to_improve_shell_loading_times/
 PERF=false
 # }}}
@@ -6,6 +7,7 @@ PERF=false
 if [ $PERF = true ]; then
   zmodload zsh/zprof
 fi
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -22,47 +24,45 @@ fi
 source ~/.zinit/bin/zinit.zsh
 ### End of Zinit installer's chunk
 
-ZPLG_HOME=~/.zinit
-if [[ ! -f $ZPLG_HOME/bin/zinit.zsh ]]; then
-  git clone https://github.com/zdharma/zinit $ZPLG_HOME/bin
-  zcompile $ZPLG_HOME/bin/zinit.zsh
-fi
-source ~/.zinit/bin/zinit.zsh
-
 ZSH_AUTOSUGGEST_MANUAL_REBIND=1  # make prompt faster
 DISABLE_MAGIC_FUNCTIONS=true     # make pasting into terminal faster
 
-#EXPORTS
-export PATH="$HOME/.rbenv/bin:$PATH"                                       # Ruby
-export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'  # FZF gitignore
-export LANG=pt_BR.UTF-8 						   # Language
-export UPDATE_ZSH_DAYS=1 						   # Days to update
+# EXPORTS OPTs
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git' # FZF gitignore
+export LC_ALL=pt_BR.UTF-8
+export LANG=pt_BR.UTF-8 						                                      # Language
+export NVM_LAZY_LOAD=true                                                 # Speed lazyload feature https://github.com/lukechilds/zsh-nvm#lazy-loading
+
+# EXPORTS DIRs
 export DOTREPO="$HOME/dotfiles"
 export NVM_DIR="${HOME}/.nvm"
-export NVM_LAZY_LOAD=true
+export PATH="$HOME/.rbenv/bin:$PATH"
+export DEV="$HOME/Dev"
 
-#THEME
+# THEME
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
-#POWERLEVEL THEME SETTINGS
+# POWERLEVEL THEME SETTINGS
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(ssh context dir vcs)
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator time)
 POWERLEVEL9K_SHOW_RULER=true
 
-#PLUGINS
-zinit wait lucid for \
-        OMZL::git.zsh \
-  atload"unalias grv" \
-        OMZP::git
-
+# PLUGINS
 zinit ice depth=1;
 zplugin light romkatv/powerlevel10k
 
-zinit ice from"gh-r" as"command"
-zinit load junegunn/fzf-bin
+{%@@ if profile == "elementary" @@%}
+zinit ice from"gh-r" as"program"
+zinit light junegunn/fzf-bin
+
+zinit ice as"command" from"gh-r" mv"fd* -> fd" pick"fd/fd"
+zinit light sharkdp/fd
+{%@@ endif @@%}
 
 zinit ice wait"1" lucid
 zinit light lukechilds/zsh-nvm
+
+zinit light Aloxaf/fzf-tab
 
 zinit wait lucid for \
   atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
@@ -72,17 +72,16 @@ zinit wait lucid for \
   blockf atpull'zinit creinstall -q .' \
       zsh-users/zsh-completions
 
-#HISTORY OPTS
+# HISTORY OPTs
 HISTFILE=$HOME/.zsh_history
 HISTSIZE=100000
 SAVEHIST=$HISTSIZE
 export HISTFILE=~/.zsh_history
-export HISTSIZE=100000
-export SAVEHIST=$HISTSIZE
-export HISTTIMEFORMAT="[%F %T]"
 export HISTIGNORE="&:ls:[bf]g:exit:reset:clear:cd:cd ..:cd..:zh"
+export HISTSIZE=100000
+export HISTTIMEFORMAT="[%F %T]"
+export SAVEHIST=$HISTSIZE
 setopt HIST_FIND_NO_DUPS
-setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_IGNORE_SPACE
 setopt HIST_REDUCE_BLANKS
@@ -90,28 +89,124 @@ setopt HIST_SAVE_NO_DUPS
 setopt INC_APPEND_HISTORY
 setopt SHARE_HISTORY
 
-#ALIASES
+# ALIASES
+# ALIASES - Globals
+alias -g G="| grep"
+alias -g S="| sort"
+
+# ALIASES - Defaults
+alias df="df -Tha --total" # Check disk usage
+alias grep="grep --color=auto"
+alias wget="wget -c"
+alias ls="ls --color=auto"
+alias rm="rm -i"
+alias cp="cp -i"
+alias mv="mv -i"
+
+alias reload= "exec $SHELL -l -i"
+alias sudo="sudo"
+
+# ALIASES - Navigation
+alias ..="cd .."
+alias 1='cd -'
+alias 2='cd -2'
+alias 3='cd -3'
+alias 4='cd -4'
+alias 5='cd -5'
+alias 6='cd -6'
+alias 7='cd -7'
+alias 8='cd -8'
+alias 9='cd -9'
+alias d='dirs -v | head -10' # Show 10 recent directories
+
+# ALIASES - Maintainance
 {%@@ if profile == "elementary" @@%}
 alias aptup="sudo apt update && sudo apt upgrade"
-alias aptclean="sudo apt autoremove"
+alias aptcln="sudo apt autoremove"
 {%@@ elif profile == "mac" @@%}
-alias macup="sudo softwareupdate -i -a"
-alias hbup="brew update && brew upgrade && brew cask upgrade"
-alias hbclean= "brew cleanup -n"
-alias purge= "sudo purge"
+alias purge="sudo purge"
+alias sysup="sudo softwareupdate -i -a"
 {%@@ endif @@%}
-alias jkc="bundle exec jekyll clean"
-alias jks="bundle exec Jekyll serve"
-alias jkh="bundle exec jekyll serve --host 0.0.0.0"
-alias jkp="bundle exec jekyll build --profile"
-alias jkd="bundle exec jekyll doctor"
-alias bup="bundle update"
+alias cpuhigh="ps auxf | sort -nr -k 3"
+alias gpuhigh="grep -i --color memory /var/log/Xorg.0.log"
+alias memhigh="ps auxf | sort -nr -k 4"
+alias meminfo="free -m -l -t"
 alias zinitup="zinit update"
-alias omzup="upgrade_oh_my_zsh"
-alias zshreload= "source ~/.zshrc"
+
+{%@@ if profile == "mac" @@%}
+# ALIASES - HomeBrew
+alias hbup="brew update && brew upgrade && brew cask upgrade"
+alias hbcln="brew cleanup"
+alias hbi="brew install"
+alias hbl="brew list"
+alias hbrm="brew uninstall"
+alias hbs="brew search"
+
+# ALIASES - HomeBrew Cask
+alias hbic="brew cask install"
+alias hblc="brew cask list"
+alias hbrmc="brew cask uninstall"
+alias hbsc="brew cask search"
+{%@@ endif @@%}
+
+# ALIASES - Lazy
+alias h="history"
+alias nowdate="date +'%d-%m-%Y'"
+alias nowtime="date +'%T'"
+
+# ALIASES - Utilities
+alias lt="du -sh * | sort -h"
+alias path="echo "$PATH" | tr : '\n'"
+{%@@ if profile == "elementary" @@%}
+alias mnt="mount | awk -F' ' '{ printf \"%s\t%s\n\",\$1,\$3; }' | column -t | egrep ^/dev/ | sort" # Mostra apenas os discos montados
+{%@@ elif profile == "mac" @@%}
+alias mnt="mount | grep -E ^/dev | column -t" # Mostra apenas os discos montados
+alias rmds="find . -name '.DS_Store' -type f -delete"
+# Show/hide hidden files in Finder
+alias files_show="defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder"
+alias files_hidden="defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder"
+# Hide/show all desktop icons (useful when presenting)
+alias icons_hide="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
+alias icons_show="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
+{%@@ endif @@%}
+
+# ALIASES - Dotfiles
 alias dotdrop="$HOME/dotfiles/dotdrop.sh"
 alias dotgit="git -C $DOTREPO"
 alias dotsync="dotgit pull && dotgit add -A && dotgit commit && dotgit push; dotdrop install"
+
+# ALIASES - Git
+alias g='git'
+alias ga='git add'
+alias gc='git commit -v'
+alias gd="git diff"
+alias gf="git fetch"
+alias gm="git merge"
+alias gp='git push'
+alias gst='git status'
+
+# ALIASES - Development
+alias jek="bundle exec jekyll"
+alias gp="gulp"
+alias cln="clean"
+alias bup="bundle update"
+
+# ALIASES - Node
+alias npmd="npm install --save-dev "
+alias npmg="npm install --global"
+alias npmi="npm init"
+alias npml="npm list"
+alias npmp="npm publish"
+alias npmr="npm run"
+alias npms="npm install --save"
+alias npmst="npm start"
+alias npmt="npm test"
+
+# ALIASES - Node Utilities
+alias np="node prune"
+alias npmup="ncu -u && npm install"
+alias nvmin="nvm install node --reinstall-packages-from=node"
+alias nvmup="nvm upgrade"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
