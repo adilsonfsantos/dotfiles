@@ -176,14 +176,15 @@ alias dotgit="git -C $DOTREPO"
 alias dotsync="dotgit pull && dotgit add -A && dotgit commit && dotgit push; dotdrop install"
 
 # ALIASES - Git
-alias g='git'
-alias ga='git add'
-alias gc='git commit -v'
+alias g="git"
+alias ga="git add"
+alias gac="git add . && git commit -m $2"
+alias gc="git commit -m $2"
 alias gd="git diff"
 alias gf="git fetch"
 alias gm="git merge"
-alias gp='git push'
-alias gst='git status'
+alias gp="git push"
+alias gs="git status"
 
 # ALIASES - Development
 alias jek="bundle exec jekyll"
