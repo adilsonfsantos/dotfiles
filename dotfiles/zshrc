@@ -222,6 +222,9 @@ fi
 {%@@ endif @@%}
 {%@@ if profile == "mac" @@%}
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+# Use fzf installed from Homebrew
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 {%@@ endif @@%}
 
 if [ $PERF = true ]; then

@@ -30,7 +30,6 @@ brew "wifi-password"
 
 # Apps
 cask "alfred"
-cask "alt-tab"
 cask "android-platform-tools"
 cask "appcleaner"
 cask "betterzip"
