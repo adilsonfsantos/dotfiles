@@ -146,10 +146,10 @@ alias hbrm="brew uninstall"
 alias hbs="brew search"
 
 # ALIASES - HomeBrew Cask
-alias hbic="brew cask install"
-alias hblc="brew cask list"
-alias hbrmc="brew cask uninstall"
-alias hbsc="brew cask search"
+alias hbic="brew install --cask"
+alias hblc="brew list --cask"
+alias hbrmc="brew uninstall --cask"
+alias hbsc="brew search --cask"
 {%@@ endif @@%}
 
 # ALIASES - Lazy
