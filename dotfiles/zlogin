@@ -1,1 +1,5 @@
 eval "$(rbenv init - --no-rehash)"
+
+{%@@ if profile == "elementary" @@%}
+eval "$(nodenv init -)"
+{%@@ endif @@%}
