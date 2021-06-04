@@ -186,7 +186,6 @@ alias gs="git status"
 
 # ALIASES - Development
 alias jek="bundle exec jekyll"
-alias gp="gulp"
 alias cln="clean"
 alias bup="bundle update"
 
