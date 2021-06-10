@@ -15,6 +15,9 @@ dotfiles:
   f_brewfile:
     src: Brewfile
     dst: ~/Brewfile
+  f_zprofile:
+    src: zprofile
+    dst: ~/.zprofile
 profiles:
   elementary:
     dotfiles:
@@ -27,3 +30,4 @@ profiles:
     - f_zshenv
     - f_zlogin
     - f_brewfile
+    - f_zprofile

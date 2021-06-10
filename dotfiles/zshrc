@@ -133,7 +133,7 @@ alias zinitup="zinit update"
 
 {%@@ if profile == "mac" @@%}
 # ALIASES - HomeBrew
-alias hbup="brew update && brew upgrade && brew cask upgrade"
+alias hbup="brew update && brew upgrade"
 alias hbcln="brew cleanup"
 alias hbi="brew install"
 alias hbl="brew list"
@@ -172,6 +172,7 @@ alias icons_show="defaults write com.apple.finder CreateDesktop -bool true && ki
 alias dotdrop="$HOME/dotfiles/dotdrop.sh"
 alias dotgit="git -C $DOTREPO"
 alias dotsync="dotgit pull && dotgit add -A && dotgit commit && dotgit push; dotdrop install"
+alias dotup="git submodule update --init --recursive && git submodule update --remote dotdrop"
 
 # ALIASES - Git
 alias g="git"
@@ -216,6 +217,8 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 
 # Use fzf installed from Homebrew
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+eval $(thefuck --alias)
 {%@@ endif @@%}
 
 if [ $PERF = true ]; then
