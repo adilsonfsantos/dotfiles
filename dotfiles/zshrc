@@ -166,6 +166,7 @@ alias files_hidden="defaults write com.apple.finder AppleShowAllFiles -bool fals
 # Hide/show all desktop icons (useful when presenting)
 alias icons_hide="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
 alias icons_show="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
+alias monitor="display_manager.py res default all"
 {%@@ endif @@%}
 
 # ALIASES - Dotfiles

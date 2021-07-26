@@ -55,5 +55,4 @@ cask "sublime-merge"
 cask "sublime-text"
 cask "suspicious-package"
 mas "Bitwarden", id: 1352778147
-mas "Blurred", id: 1497527363
 mas "Hidden Bar", id: 1452453066
