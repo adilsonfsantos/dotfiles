@@ -33,7 +33,7 @@ export LC_ALL=pt_BR.UTF-8
 export LANG=pt_BR.UTF-8 						                                      # Language
 # EXPORTS DIRs
 export DOTREPO="$HOME/dotfiles"
-export NVM_DIR="${HOME}/.nvm"
+export PATH="$HOME/.nodenv/bin:$PATH"
 export PATH="$HOME/.rbenv/bin:$PATH"
 export DEV="$HOME/Dev"
 {%@@ if profile == "mac" @@%}
@@ -203,24 +203,24 @@ alias npmst="npm start"
 alias npmt="npm test"
 
 # ALIASES - Node Utilities
-alias np="node prune"
+alias np="prune"
 alias npmup="ncu -u && npm install"
-alias nvmin="nvm install node --reinstall-packages-from=node"
-alias nvmup="nvm upgrade"
+alias nodein="nodenv install node --reinstall-packages-from=node"
+alias nodeup="cd ~/.nodenv && git pull"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+eval "$(nodenv init -)"
 
 {%@@ if profile == "mac" @@%}
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 # Use fzf installed from Homebrew
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+{%@@ endif @@%}
 
 eval $(thefuck --alias)
-{%@@ endif @@%}
 
 if [ $PERF = true ]; then
   zprof
