@@ -97,7 +97,11 @@ alias -g S="| sort"
 alias df="df -Tha --total" # Check disk usage
 alias grep="grep --color=auto"
 alias wget="wget -c"
+{%@@ if profile == "elementary" @@%}
 alias ls="ls --color=auto"
+{%@@ elif profile == "mac" @@%}
+alias ls='ls -G'
+{%@@ endif @@%}
 alias rm="rm -i"
 alias cp="cp -i"
 alias mv="mv -i"
