@@ -9,9 +9,6 @@ dotfiles:
   f_zshenv:
     src: zshenv
     dst: ~/.zshenv
-  f_zlogin:
-    src: zlogin
-    dst: ~/.zlogin
   f_brewfile:
     src: Brewfile
     dst: ~/Brewfile
@@ -23,11 +20,8 @@ profiles:
     dotfiles:
     - f_zshrc
     - f_zshenv
-    - f_zlogin
   mac:
     dotfiles:
     - f_zshrc
-    - f_zshenv
-    - f_zlogin
     - f_brewfile
     - f_zprofile
