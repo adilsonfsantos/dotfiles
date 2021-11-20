@@ -18,7 +18,7 @@ fi
 ### Added by Zinit's installer
 ZPLG_HOME=~/.zinit
 if [[ ! -f $ZPLG_HOME/bin/zinit.zsh ]]; then
-  git clone https://github.com/zdharma/zinit $ZPLG_HOME/bin
+  git clone https://github.com/zdharma-continuum/zinit $ZPLG_HOME/bin
   zcompile $ZPLG_HOME/bin/zinit.zsh
 fi
 source ~/.zinit/bin/zinit.zsh
@@ -65,7 +65,7 @@ zinit light Aloxaf/fzf-tab
 
 zinit wait lucid for \
   atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
-    zdharma/fast-syntax-highlighting \
+    zdharma-continuum/fast-syntax-highlighting \
   atload"_zsh_autosuggest_start" \
       zsh-users/zsh-autosuggestions \
   blockf atpull'zinit creinstall -q .' \
