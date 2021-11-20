@@ -61,6 +61,10 @@ zinit ice as"command" from"gh-r" mv"fd* -> fd" pick"fd/fd"
 zinit light sharkdp/fd
 {%@@ endif @@%}
 
+{%@@ if profile == "elementary" @@%}
+zinit light mattberther/zsh-nodenv
+{%@@ endif @@%}
+
 zinit light Aloxaf/fzf-tab
 
 zinit wait lucid for \
