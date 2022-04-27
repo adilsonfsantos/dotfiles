@@ -182,6 +182,8 @@ alias files_hidden="defaults write com.apple.finder AppleShowAllFiles -bool fals
 alias icons_hide="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
 alias icons_show="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
 alias monitor="display_manager.py res default all"
+alias pwrkbd="ioreg -c AppleBluetoothHIDKeyboard |grep '\"BatteryPercent\" ='"
+alias pwrmouse="ioreg -c BNBMouseDevice |grep '\"BatteryPercent\" ='"
 {%@@ endif @@%}
 
 # ALIASES - Dotfiles
