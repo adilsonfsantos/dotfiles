@@ -53,8 +53,8 @@ dotfiles:
     dst: ~/.config/ranger/scope.sh
     chmod: '755'
   f_sway_config:
-    src: config/sway/config-float
-    dst: ~/.config/sway/config-float
+    src: config/sway/config
+    dst: ~/.config/sway/config
   f_waybar_config-float:
     src: config/waybar/config-float
     dst: ~/.config/waybar/config-float

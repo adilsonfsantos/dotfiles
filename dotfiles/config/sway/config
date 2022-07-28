@@ -223,6 +223,7 @@ include /etc/sway/config.d/*
     [app_id="rygel-preferences"]                      floating enable
     [app_id="dconf-editor"]                           floating enable
     [app_id="gnome-system-monitor"]                   floating enable, border none
+    [app_id="ssh-askpass-sublime"]                    floating enable, border none
   }
 
 # bindsym $mod+c move absolute position center
