@@ -1,0 +1,23 @@
+anchor=top-center
+font=Inter 10
+background-color=#1b222d
+text-color=#ffffff
+sort=+time
+max-visible=4
+margin=8
+padding=8
+border-size=2
+border-color=#98a8c5
+border-radius=8
+default-timeout=60000
+icon-location=left
+layer=overlay
+
+[urgency=low]
+border-color=#98a8c5
+
+[urgency=normal]
+border-color=#ffd484
+
+[urgency=critical]
+border-color=#e78482

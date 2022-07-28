@@ -1,0 +1,109 @@
+* {
+  font-family: "JetBrainsMono Nerd Font", "Material Design Icons Desktop";
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.modules-left, .modules-center, .modules-right {
+  margin-bottom: 4px;
+  margin-top: 4px;
+}
+
+.modules-left {
+  margin-left: 8px;
+}
+
+.modules-right {
+  margin-right: 8px;
+}
+
+#waybar {
+  background-color: #1b222d;
+}
+
+#workspaces button {
+  background-color: #39465e;
+  border-radius: 4px;
+  border: none;
+  box-shadow: inset rgba(255, 255, 255, 0) 0px 0px 0px 2px;
+  color: #fff;
+  font-size: 10px;
+  /* margin-right: 8px; */
+  padding: 0px 8px;
+  transition: color .32s cubic-bezier(0.09,0.19,0.43,0.63),background-color .32s cubic-bezier(0.09,0.19,0.43,0.63),box-shadow .16s cubic-bezier(0.09,0.19,0.43,0.63);
+}
+
+#workspaces button:not(:last-child) {
+  margin-right: 8px;
+}
+
+#workspaces button.focused {
+  background-color: #fff;
+  color: #1b222d;
+}
+
+#workspaces button.focused:hover {
+  background: #fff;
+  box-shadow: inset rgba(255, 255, 255, 0) 0px 0px 0px 2px;
+  color: #1b222d;
+  text-shadow: none;
+}
+
+#workspaces button:hover {
+  background: #39465e;
+  box-shadow: inset rgba(255, 255, 255, 0.75) 0px 0px 0px 2px;
+  text-shadow: none;
+}
+
+#window {
+  background-color: #39465e;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 0px 8px;
+  transition: color .32s cubic-bezier(0.09,0.19,0.43,0.63),background-color .32s cubic-bezier(0.09,0.19,0.43,0.63),box-shadow .16s cubic-bezier(0.09,0.19,0.43,0.63);
+}
+
+#waybar.empty #window {
+  background-color: transparent;
+  padding: 0;
+}
+
+#mode{
+  background-color: #ffb374;
+  border-radius: 4px;
+  color: #1b222d;
+  font-weight: 700;
+  padding: 0px 8px;
+}
+
+#clock, #pulseaudio, #network, #custom-power {
+  /* background-color: #1b222d; */
+  border-radius: 4px;
+  padding: 0px 8px;
+  color: #1b222d;
+}
+
+#clock {
+  background-color: #ffd484;
+}
+
+#network {
+  background-color: #ad82cb;
+}
+
+#pulseaudio {
+  background-color: #6db3ce;
+
+}
+
+#custom-power {
+  background-color: #e78482;
+  font-size: 16px;
+}
+
+tooltip {
+  border-radius: 4px;
+  background-color: #1b222d;
+}

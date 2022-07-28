@@ -1,0 +1,104 @@
+# ALIASES - Defaults
+alias rm="rm -iv"
+alias cp="cp -iv"
+alias mv="mv -iv"
+alias sudo="sudo"
+alias rsync="rsync --info=PROGRESS2 -v"
+
+# ALIASES - Replacements to standard commands
+alias df="duf"
+alias grep="rg"
+alias wget="aria2c -c"
+alias ls="exa"
+alias du="dust -b"
+
+# ALIASES - Navigation
+alias ..="cd .."
+
+# ALIASES - Maintainance
+alias zinitup="zinit update --parallel"
+alias zinitself="zinit self-update"
+{%@@ if profile == "fedora" @@%}
+alias dnfup="sudo dnf upgrade"
+alias dnfcln="sudo dnf autoremove"
+alias dnfsrch="dnf search"
+alias dnfin="sudo dnf install"
+alias dnfrm="sudo dnf remove"
+{%@@ elif profile == "mac" @@%}
+alias purge="sudo purge"
+alias sysup="sudo softwareupdate -i -a"
+
+# ALIASES - HomeBrew
+alias hbup="brew update && brew upgrade"
+alias hbcln="brew cleanup"
+alias hbin="brew install"
+alias hbls="brew list"
+alias hbrm="brew uninstall"
+alias hbsrch="brew search"
+
+# ALIASES - HomeBrew Cask
+alias hbinc="brew install --cask"
+alias hblsc="brew list --cask"
+alias hbrmc="brew uninstall --cask"
+alias hbsrchc="brew search --cask"
+
+{%@@ endif @@%}
+# ALIASES - Lazy
+alias hist="history"
+alias nowdate="date +'%d-%m-%Y'"
+alias nowtime="date +'%T'"
+
+# ALIASES - Utilities
+alias reload= "exec $SHELL -l -i"
+alias path="echo "$PATH" | tr : '\n'"
+{%@@ if profile == "fedora" @@%}
+alias swaytree= "swaymsg -t get_tree | rg"
+{%@@ elif profile == "mac" @@%}
+alias rmds="fd -H '^\.DS_Store$' -tf -X rm -i"
+# Show/hide hidden files in Finder
+alias files_show="defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder"
+alias files_hidden="defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder"
+# Hide/show all desktop icons (useful when presenting)
+alias icons_hide="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
+alias icons_show="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
+alias monitor="display_manager.py res default all"
+alias pwrkbd="ioreg -c AppleBluetoothHIDKeyboard |grep '\"BatteryPercent\" ='"
+alias pwrmouse="ioreg -c BNBMouseDevice |grep '\"BatteryPercent\" ='"
+{%@@ endif @@%}
+
+# ALIASES - Dotfiles
+alias dotdrop="$HOME/dotfiles/dotdrop.sh"
+alias dotgit="git -C $DOTREPO"
+alias dotsync="dotgit pull && dotgit add -A && dotgit commit && dotgit push; dotdrop install"
+alias dotup="git submodule update --init --recursive && git submodule update --remote dotdrop"
+
+# ALIASES - Git
+alias g="git"
+alias ga="git add"
+alias gac="git add . && git commit -m $2"
+alias gc="git commit -m $2"
+alias gd="git diff"
+alias gf="git fetch"
+alias gm="git merge"
+alias gp="git push"
+alias gs="git status"
+
+# ALIASES - Bundle
+alias bunjek="bundle exec jekyll"
+alias bunup="bundle update"
+
+# ALIASES - Npm
+alias npmd="npm install --save-dev "
+alias npmg="npm install --global"
+alias npmi="npm init"
+alias npml="npm list"
+alias npmp="npm publish"
+alias npmr="npm run"
+alias npms="npm install --save"
+alias npmst="npm start"
+alias npmt="npm test"
+
+# ALIASES - Node Utilities
+alias npmup="ncu -u && npm install"
+alias nodein="nodenv install node --reinstall-packages-from=node"
+alias nodeup="cd ~/.nodenv && git pull"

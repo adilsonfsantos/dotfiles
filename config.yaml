@@ -15,13 +15,99 @@ dotfiles:
   f_zprofile:
     src: zprofile
     dst: ~/.zprofile
+  f_p10k.zsh:
+    src: p10k.zsh
+    dst: ~/.p10k.zsh
+  f_btop.conf:
+    src: config/btop/btop.conf
+    dst: ~/.config/btop/btop.conf
+  f_foot.ini:
+    src: config/foot/foot.ini
+    dst: ~/.config/foot/foot.ini
+  f_config:
+    src: config/mako/config
+    dst: ~/.config/mako/config
+  f_bindings.json:
+    src: config/micro/bindings.json
+    dst: ~/.config/micro/bindings.json
+  f_settings.json:
+    src: config/micro/settings.json
+    dst: ~/.config/micro/settings.json
+  f_config.conf:
+    src: config/neofetch/config.conf
+    dst: ~/.config/neofetch/config.conf
+  f_commands_full.py:
+    src: config/ranger/commands_full.py
+    dst: ~/.config/ranger/commands_full.py
+  f_commands.py:
+    src: config/ranger/commands.py
+    dst: ~/.config/ranger/commands.py
+  f_rc.conf:
+    src: config/ranger/rc.conf
+    dst: ~/.config/ranger/rc.conf
+  f_rifle.conf:
+    src: config/ranger/rifle.conf
+    dst: ~/.config/ranger/rifle.conf
+  f_scope.sh:
+    src: config/ranger/scope.sh
+    dst: ~/.config/ranger/scope.sh
+    chmod: '755'
+  f_sway_config:
+    src: config/sway/config-float
+    dst: ~/.config/sway/config-float
+  f_waybar_config-float:
+    src: config/waybar/config-float
+    dst: ~/.config/waybar/config-float
+  f_style-float.css:
+    src: config/waybar/style-float.css
+    dst: ~/.config/waybar/style-float.css
+  f_wofi_config:
+    src: config/wofi/config
+    dst: ~/.config/wofi/config
+  f_wofi_style.css:
+    src: config/wofi/style.css
+    dst: ~/.config/wofi/style.css
+  f_config-simple_bar:
+    src: config/waybar/config-simple_bar
+    dst: ~/.config/waybar/config-simple_bar
+  f_style-simple_bar.css:
+    src: config/waybar/style-simple_bar.css
+    dst: ~/.config/waybar/style-simple_bar.css
+  f_mywob:
+    src: bin/mywob
+    dst: ~/bin/mywob
+    chmod: '744'
+  f_zsh_aliases:
+    src: zsh_aliases
+    dst: ~/.zsh_aliases
 profiles:
-  elementary:
+  fedora:
     dotfiles:
     - f_zshrc
-    - f_zshenv
+    - f_p10k.zsh
+    - f_btop.conf
+    - f_foot.ini
+    - f_config
+    - f_bindings.json
+    - f_settings.json
+    - f_config.conf
+    - f_commands_full.py
+    - f_commands.py
+    - f_rc.conf
+    - f_rifle.conf
+    - f_scope.sh
+    - f_sway_config
+    - f_waybar_config-float
+    - f_style-float.css
+    - f_wofi_config
+    - f_wofi_style.css
+    - f_config-simple_bar
+    - f_style-simple_bar.css
+    - f_mywob
+    - f_zsh_aliases
   mac:
     dotfiles:
     - f_zshrc
     - f_brewfile
     - f_zprofile
+    - f_zsh_aliases
