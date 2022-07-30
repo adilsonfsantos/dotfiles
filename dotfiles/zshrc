@@ -72,11 +72,6 @@ zi for \
   from"gh-r" \
   sbin"dust*/dust" \
 @bootandy/dust
-
-zi for \
-    from'gh-r' \
-    sbin'**/git-mkver' \
-  idc101/git-mkver
 {%@@ endif @@%}
 
 zinit light Aloxaf/fzf-tab
