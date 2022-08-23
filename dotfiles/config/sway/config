@@ -198,32 +198,13 @@ include /etc/sway/config.d/*
 # Window behaviour
   ## Always float certain windows
   for_window {
+    [app_id=".*"]                                     floating enable
     [title="(?:Open|Save) (?:File|Folder|As)"]        floating enable
-    [app_id="pop-up"]                                 floating enable
-    [app_id="bubble"]                                 floating enable
-    [app_id="task_dialog"]                            floating enable
-    [app_id="Preferences"]                            floating enable
-    [app_id="dialog"]                                 floating enable
-    [app_id="menu"]                                   floating enable
-    [app_id="Organizer"]                              floating enable
-    [app_id="About"]                                  floating enable
-    [app_id="toolbox"]                                floating enable
-    [app_id="page-info"]                              floating enable
-    [app_id="webconsole"]                             floating enable
     [app_id="mpv"]                                    floating enable, resize 960 540
     [app_id="nautilus"]                               floating enable, resize 960 540
     [title="^Picture-in-Picture$"]                    floating enable, sticky enable,
     [title="^Picture-in-Picture$"]                    resize 800 450
     [title="^Picture-in-Picture$"]                    move position 1107 534
-    [app_id="(?:org.gnome)"]                          floating enable, border none
-    [app_id="gnome-control-center"]                   floating enable, border none
-    [app_id="gnome-disks"]                            floating enable, border none
-    [app_id="org.gnome.Calculator"]                   floating enable
-    [app_id="org.gnome.Settings"]                     floating enable
-    [app_id="rygel-preferences"]                      floating enable
-    [app_id="dconf-editor"]                           floating enable
-    [app_id="gnome-system-monitor"]                   floating enable, border none
-    [app_id="ssh-askpass-sublime"]                    floating enable, border none
   }
 
 # bindsym $mod+c move absolute position center
