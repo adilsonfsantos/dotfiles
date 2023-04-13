@@ -1,7 +1,7 @@
 # ALIASES - Defaults
-alias rm="rm -iv"
-alias cp="cp -iv"
-alias mv="mv -iv"
+alias rm="rm -i -v"
+alias cp="cp -i -v"
+alias mv="mv -i -v"
 alias sudo="sudo"
 alias rsync="rsync --info=PROGRESS2 -v"
 
@@ -53,6 +53,7 @@ alias reload= "exec $SHELL -l -i"
 alias path="echo "$PATH" | tr : '\n'"
 {%@@ if profile == "fedora" @@%}
 alias swaytree= "swaymsg -t get_tree | rg"
+alias tip = "neofetch"
 {%@@ elif profile == "mac" @@%}
 alias rmds="fd -H '^\.DS_Store$' -tf -X rm -i"
 # Show/hide hidden files in Finder
