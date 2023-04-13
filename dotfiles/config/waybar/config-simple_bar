@@ -47,7 +47,7 @@
 
 	"pulseaudio": {
 		"on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
-		"on-click-right": "easyeffects",
+		"on-click-right": "pavucontrol",
 		"format": "{icon} {volume}%",
 				"format-muted": "󰝟 0%",
         "format-icons": {

@@ -53,7 +53,7 @@ alias reload= "exec $SHELL -l -i"
 alias path="echo "$PATH" | tr : '\n'"
 {%@@ if profile == "fedora" @@%}
 alias swaytree= "swaymsg -t get_tree | rg"
-alias tip = "neofetch"
+alias tips="neofetch"
 {%@@ elif profile == "mac" @@%}
 alias rmds="fd -H '^\.DS_Store$' -tf -X rm -i"
 # Show/hide hidden files in Finder

@@ -8,7 +8,6 @@
 
   exec_always {
     gsettings set org.gnome.desktop.interface {
-        gtk-theme 'Flat-Remix-GTK-Red'
         color-scheme 'prefer-dark'
         font-name 'Inter 11'
         document-font-name 'Inter 11'
@@ -39,9 +38,10 @@
     }
 
 # Output configuration
-  output HDMI-A-1 {
+  output * {
     resolution 1920x1080@74.986Hz
-    background $HOME/Imagens/880765.png fill
+    background ~/Imagens/880765.png fill
+    adaptive_sync on
   }
 
 # Input configuration
@@ -159,10 +159,10 @@
 
 ## Media keys
   bindsym {
-    XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5% && pactl get-sink-volume @DEFAULT_SINK@ | head -n 1 | awk '{print substr($5, 1, length($5)-1)}' > $WOBSOCK
-    XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5% && pactl get-sink-volume @DEFAULT_SINK@ | head -n 1 | awk '{print substr($5, 1, length($5)-1)}' > $WOBSOCK
-    XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
-    XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
+    XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ && wpctl get-volume @DEFAULT_AUDIO_SINK@ | head -n 1 | awk '{print substr($5, 1, length($5)-1)}' > $WOBSOCK
+    XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && wpctl get-volume @DEFAULT_AUDIO_SINK@ | head -n 1 | awk '{print substr($5, 1, length($5)-1)}' > $WOBSOCK
+    XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+    XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
     XF86AudioPlay exec playerctl play-pause
     XF86AudioNext exec playerctl next
     XF86AudioPrev exec playerctl previous
@@ -171,20 +171,24 @@
 # clipman history
 bindsym $mod2+v exec clipman pick -t wofi
 
+# Screenshot
+bindsym $mod+Print exec grim -g "$(slurp)" - | swappy -f -
+
+# Screenshot selected window
+bindsym $mod2+Print exec grim -g "$(swaymsg -t get_tree | jq -r '.. | select(.pid? and .visible?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"' | slurp)" - | swappy -f -
+
 # Status Bar
-  bar {
-      swaybar_command waybar
-  }
+  bar swaybar_command waybar
 
 # Styling
 font pango: Inter-Light 11
 
   ## Window decoration
     ### class               border  backgr. text    indicator child_border
-    client.focused          #98a8c5 #98a8c5 #ffffff #7dcfff   #98a8c5
-    client.focused_inactive #39465e #39465e #98a8c5 #7dcfff   #39465e
-    client.unfocused        #39465e #39465e #98a8c5 #7dcfff   #414868
-    client.urgent           #e78482 #e78482 #ffffff #7dcfff   #e78482
+    ### client.focused          #414868 #1a1b26 #c0caf5 #7dcfff   #98a8c5
+    ### client.focused_inactive #15161e #1a1b26 #c0caf5 #7dcfff   #39465e
+    ### client.unfocused        #15161e #1a1b26 #c0caf5 #7dcfff   #414868
+    ### client.urgent           #f7768e #1a1b26 #c0caf5 #7dcfff   #e78482
 
   ## Gaps
     default_border pixel 2
