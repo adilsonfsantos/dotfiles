@@ -1,62 +1,86 @@
+* {
+    all:unset;
+}
+
 #window {
   margin: 0px;
-  border: 1px solid #39465e;
-  border-radius: 8px;
-  background-color: #1b222d;
-  font-family: Inter;
+  background-color: #16161e;
+  font-family: "JetBrainsMono Nerd Font";
   font-size: 14px;
+  line-height: 1.25;
+  }
+  
+  #outer-box {
+  margin: 12px;
+  border: none;
+  background-color: #16161e;
   }
 
   #input {
-  margin: 5px;
-  border: 1px solid #39465e;
-  color: #ffffff;
-  background-color: #1b222d;
+  border-radius: 0;
+  border: 1px solid #1a1b26;
+  color: #a9b1d6;
+  background-color: #0f0f14;
+  height: 32px;
+  padding: 8px 0;
+  font-size: 14px;
   }
 
-  #input image {
-    color: #ffffff;
+    #input image {
+    color: #a9b1d6;
+    margin: 0 8px;
   }
 
-  #inner-box {
-  margin: 5px;
-  border: none;
-  background-color: #1b222d;
-  }
-
-  #outer-box {
-  margin: 5px;
-  border: none;
-  background-color: #1b222d;
+  #input:focus {
+    border: 1px solid #565f89;
   }
 
   #scroll {
   margin: 0px;
+  margin-top: 16px;
   border: none;
+  }
+
+  #inner-box {
+  border: none;
+  background-color: #16161e;
   }
 
   #text {
   margin: 5px;
   border: none;
-  color: #ffffff;
+  color: #a9b1d6;
   }
 
   #unselected {
-    color: #98a8c5;
+    color: #565f89;
   }
 
-  #entry:selected {
-    background-color: #39465e;
+  #entry:selected, #selected {
+    background-color: #1a1b26;
     font-weight: normal;
-    border-radius: 6px;
-    border: 0px solid #ffffff;
-    color: #ffffff;
+    color: #a9b1d6;
+  }
+  
+  #entry:focus {
+  border: 1px solid #bb9af7;
   }
 
   #entry {
-    background-color: #1b222d;
+    background-color: #16161e;
     border-radius: none;
     color: #98a8c5;
+    padding: 16px 16px;
+    border: 1px solid transparent;
+    box-shadow: inset 0rem 0px rgba(0, 0, 0, 0);
+  }
+
+  #entry image {
+    margin-right: 8px;
+  }
+
+  #entry:hover {
+    background-color: #0f0f14;
   }
 
   expander {

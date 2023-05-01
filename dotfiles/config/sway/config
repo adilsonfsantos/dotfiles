@@ -1,8 +1,5 @@
 # Autostart
   exec mako
-  set $WOBSOCK $XDG_RUNTIME_DIR/wob.sock
-  # exec rm -f $WOBSOCK && mkfifo $WOBSOCK && tail -f $WOBSOCK | wob
-  exec_always killall wob; rm -f $WOBSOCK; mkfifo $WOBSOCK && tail -f $WOBSOCK | wob -a top
   exec wl-paste -t text --watch clipman store
   exec wl-paste -p -t text --watch clipman store -P --histpath="~/.local/share/clipman-primary.json"
 
@@ -96,6 +93,20 @@
         $mod2+0 move container to workspace number 10
       }
 
+
+set { 
+  $switch swaymsg -t get_tree | \
+    jq  -r  '.nodes[].nodes[] | if .nodes then [recurse(.nodes[])] else [] end + .floating_nodes | .[] | select(.nodes==[]) | ((.id | tostring) + " " + .name)' | \
+      wofi --show dmenu | { \
+        read -r id name
+        swaymsg "[con_id=$id]" focus
+      }
+}
+
+bindsym {
+  $mod2+Tab exec $switch
+}
+
   ## Layout:
     bindsym {
       ### Make the current focus fullscreen
@@ -159,8 +170,8 @@
 
 ## Media keys
   bindsym {
-    XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ && wpctl get-volume @DEFAULT_AUDIO_SINK@ | head -n 1 | awk '{print substr($5, 1, length($5)-1)}' > $WOBSOCK
-    XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && wpctl get-volume @DEFAULT_AUDIO_SINK@ | head -n 1 | awk '{print substr($5, 1, length($5)-1)}' > $WOBSOCK
+    XF86AudioRaiseVolume exec wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 1%+
+    XF86AudioLowerVolume exec wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 1%-
     XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
     XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
     XF86AudioPlay exec playerctl play-pause
@@ -185,10 +196,10 @@ font pango: Inter-Light 11
 
   ## Window decoration
     ### class               border  backgr. text    indicator child_border
-    ### client.focused          #414868 #1a1b26 #c0caf5 #7dcfff   #98a8c5
-    ### client.focused_inactive #15161e #1a1b26 #c0caf5 #7dcfff   #39465e
-    ### client.unfocused        #15161e #1a1b26 #c0caf5 #7dcfff   #414868
-    ### client.urgent           #f7768e #1a1b26 #c0caf5 #7dcfff   #e78482
+    client.focused          #bb9af7 #bb9af7 #a9b1d6
+    # client.focused_inactive
+    client.unfocused        #1a1b26 #1a1b26 #a9b1d6
+    client.urgent           #ff9e64 #ff9e64 #a9b1d6
 
   ## Gaps
     default_border pixel 2

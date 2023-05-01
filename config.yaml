@@ -67,16 +67,6 @@ dotfiles:
   f_wofi_style.css:
     src: config/wofi/style.css
     dst: ~/.config/wofi/style.css
-  f_config-simple_bar:
-    src: config/waybar/config-simple_bar
-    dst: ~/.config/waybar/config-simple_bar
-  f_style-simple_bar.css:
-    src: config/waybar/style-simple_bar.css
-    dst: ~/.config/waybar/style-simple_bar.css
-  f_mywob:
-    src: bin/mywob
-    dst: ~/bin/mywob
-    chmod: '744'
   f_zsh_aliases:
     src: zsh_aliases
     dst: ~/.zsh_aliases
@@ -101,9 +91,6 @@ profiles:
     - f_style-float.css
     - f_wofi_config
     - f_wofi_style.css
-    - f_config-simple_bar
-    - f_style-simple_bar.css
-    - f_mywob
     - f_zsh_aliases
   mac:
     dotfiles:

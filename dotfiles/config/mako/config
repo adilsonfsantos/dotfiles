@@ -1,23 +1,20 @@
-anchor=top-center
-font=Inter 10
-background-color=#1b222d
-text-color=#ffffff
+font=Inter Light 10
+background-color=#1a1b26
+text-color=#a9b1d6
 sort=+time
-max-visible=4
 margin=8
 padding=8
 border-size=2
-border-color=#98a8c5
-border-radius=8
-default-timeout=60000
+border-color=#1a1b26
+border-radius=0
 icon-location=left
 layer=overlay
 
 [urgency=low]
-border-color=#98a8c5
+border-color=#414868
 
 [urgency=normal]
-border-color=#ffd484
+border-color=#e0af68
 
 [urgency=critical]
-border-color=#e78482
+border-color=#f7768e
