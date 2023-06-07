@@ -70,9 +70,9 @@ dotfiles:
   d_wofi:
     src: config/wofi
     dst: ~/.config/wofi/
-  f_wofi_config:
-    src: config/wofi/config
-    dst: ~/.config/wofi/config
+  f_zsh_aliases:
+    src: zsh_aliases
+    dst: ~/.zsh_aliases
   d_nvim_plugins:
     src: config/nvim/lua/custom/plugins
     dst: ~/.config/nvim/lua/custom/plugins
@@ -85,7 +85,7 @@ dotfiles:
 profiles:
   fedora:
     dotfiles:
-        - d_nvim_plugins
+    - d_nvim_plugins
     - d_nvim_after
     - f_zshrc
     - f_p10k.zsh
@@ -98,11 +98,6 @@ profiles:
     - d_sway
     - d_waybar
     - d_wofi
-    - f_sway_config
-    - f_waybar_config-float
-    - f_style-float.css
-    - f_wofi_config
-    - f_wofi_style.css
     - f_zsh_aliases
   mac:
     dotfiles:
