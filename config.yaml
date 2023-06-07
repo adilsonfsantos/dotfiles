@@ -70,9 +70,20 @@ dotfiles:
   f_zsh_aliases:
     src: zsh_aliases
     dst: ~/.zsh_aliases
+  d_plugins:
+    src: config/nvim/lua/custom/plugins
+    dst: ~/.config/nvim/lua/custom/plugins
+  d_plugin:
+    src: config/nvim/after/plugin
+    dst: ~/.config/nvim/after/plugin
+  d_after:
+    src: config/nvim/after
+    dst: ~/.config/nvim/after
 profiles:
   fedora:
     dotfiles:
+    - d_plugins
+    - d_after
     - f_zshrc
     - f_p10k.zsh
     - f_btop.conf
@@ -94,6 +105,8 @@ profiles:
     - f_zsh_aliases
   mac:
     dotfiles:
+    - d_plugins
+    - d_after
     - f_zshrc
     - f_brewfile
     - f_zprofile
