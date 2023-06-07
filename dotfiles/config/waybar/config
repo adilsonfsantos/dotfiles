@@ -1,11 +1,11 @@
 {
 	"spacing": 8,
-	"position": "bottom",
-	"modules-left": ["sway/workspaces", "sway/window",
+	"position": "top",
+	"modules-left": ["sway/workspaces",
 	"sway/mode",
 	"tray"],
-	"modules-center": ["clock"],
-	"modules-right": ["network", "sndio","pulseaudio", "custom/power"],
+	"modules-center": ["sway/window"],
+	"modules-right": ["network","wireplumber", "clock","custom/power"],
 
 	"sway/workspaces": {
 		"disable-scroll": true,
@@ -39,24 +39,32 @@
 	"custom/power": {
 		"format":"󰐥",
 		"on-click":
-		"swaynag -t warning -m 'Encerrar Sessão/Desligar' -b 'Encerrar Sessao' 'swaymsg exec swaymsg exit' -b 'Reiniciar' 'swaymsg exec systemctl reboot' -b 'Desligar' 'swaymsg exec systemctl poweroff' --dismiss-button='Cancelar' --background=#1b222d --text=#ffffff --border-bottom=#39465e --button-background=#ffd484 --button-text=#1b222d --border-bottom-size=1 --message-padding=6 --button-gap=16 --button-margin-right=12 --button-border-size=0 --button-padding=4 --font='JetBrainsMono Nerd Font 10'",
+		"swaynag -t warning -m 'Encerrar Sessão/Desligar' -b 'Encerrar Sessão' 'swaymsg exec swaymsg exit' -b 'Reiniciar' 'swaymsg exec systemctl reboot' -b 'Desligar' 'swaymsg exec systemctl poweroff' --dismiss-button='Cancelar' --background=#16161e --text=#a9b1d6 --border-bottom=#565f89 --button-background=#e0af68 --button-text=#16161e --border-bottom-size=1 --message-padding=8 --button-gap=16 --button-margin-right=16 --button-border-size=0 --button-padding=4 --font='JetBrainsMono Nerd Font 9'",
 		// https://github.com/Alexays/Waybar/issues/202#issuecomment-484342124
 		"tooltip": false
 	},
 
 
 	"pulseaudio": {
-		"on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
-		"on-click-right": "pavucontrol",
+		"on-click": "exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+		"on-click-right": "easyeffects",
 		"format": "{icon} {volume}%",
-				"format-muted": "󰝟 󰅖",
+				"format-muted": "󰝟 0%",
         "format-icons": {
 						"muted": "󰝟",
             "headphone": "󰋋",
             "headset": "󰋎",
-						"default": ["󰕿", "󰖀", "󰖀", "󰖀", "󰖀", "󰕾", "󰕾", "󰕾", "󰕾", "󰕾"]
+            "default": ["󰕿", "󰖀", "󰖀", "󰖀", "󰖀", "󰕾", "󰕾", "󰕾", "󰕾", "󰕾"]
         }
     },
+
+		"wireplumber": {
+			"format": "{volume}%",
+			"on-click": "exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+			"on-click-right": "easyeffects",
+			"format-muted": "󰝟 0%",
+			"format-icons": ["󰕿", "󰖀", "󰖀", "󰖀", "󰖀", "󰕾", "󰕾", "󰕾", "󰕾", "󰕾"]
+	},
 
 	"network": {
 		"format": "{ifname}",

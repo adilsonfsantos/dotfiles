@@ -2,6 +2,15 @@ config:
   backup: true
   create: true
   dotpath: dotfiles
+  cmpignore:
+  - '*.log'
+  upignore:
+  - '*.log'
+  instignore:
+  - '*.log'
+  impignore:
+  - '*.log'
+
 dotfiles:
   f_zshrc:
     src: zshrc
@@ -18,95 +27,79 @@ dotfiles:
   f_p10k.zsh:
     src: p10k.zsh
     dst: ~/.p10k.zsh
-  f_btop.conf:
-    src: config/btop/btop.conf
-    dst: ~/.config/btop/btop.conf
-  f_foot.ini:
-    src: config/foot/foot.ini
-    dst: ~/.config/foot/foot.ini
-  f_config:
-    src: config/mako/config
-    dst: ~/.config/mako/config
-  f_bindings.json:
-    src: config/micro/bindings.json
-    dst: ~/.config/micro/bindings.json
-  f_settings.json:
-    src: config/micro/settings.json
-    dst: ~/.config/micro/settings.json
-  f_config.conf:
-    src: config/neofetch/config.conf
-    dst: ~/.config/neofetch/config.conf
-  f_commands_full.py:
-    src: config/ranger/commands_full.py
-    dst: ~/.config/ranger/commands_full.py
-  f_commands.py:
-    src: config/ranger/commands.py
-    dst: ~/.config/ranger/commands.py
-  f_rc.conf:
-    src: config/ranger/rc.conf
-    dst: ~/.config/ranger/rc.conf
-  f_rifle.conf:
-    src: config/ranger/rifle.conf
-    dst: ~/.config/ranger/rifle.conf
-  f_scope.sh:
-    src: config/ranger/scope.sh
-    dst: ~/.config/ranger/scope.sh
+  d_btop:
+    src: config/btop
+    dst: ~/.config/btop/
+    cmpignore:
+    - '*/themes'
+    upignore:
+    - '*/themes'
+    instignore:
+    - '*/themes'
+  d_foot:
+    src: config/foot
+    dst: ~/.config/foot/
+  d_mako:
+    src: config/mako
+    dst: ~/.config/mako
+  d_micro:
+    src: config/micro
+    dst: ~/.config/micro/
+    cmpignore:
+    - '*/backups'
+    - '*/buffers'
+    upignore:
+    - '*/backups'
+    - '*/buffers'
+    instignore:
+    - '*/backups'
+    - '*/buffers'
+  d_neofetch:
+    src: config/neofetch
+    dst: ~/.config/neofetch/
+  d_ranger:
+    src: config/ranger
+    dst: ~/.config/ranger/
     chmod: '755'
-  f_sway_config:
-    src: config/sway/config
-    dst: ~/.config/sway/config
-  f_waybar_config-float:
-    src: config/waybar/config-float
-    dst: ~/.config/waybar/config-float
-  f_style-float.css:
-    src: config/waybar/style-float.css
-    dst: ~/.config/waybar/style-float.css
-  f_wofi_config:
-    src: config/wofi/config
-    dst: ~/.config/wofi/config
-  f_wofi_style.css:
-    src: config/wofi/style.css
-    dst: ~/.config/wofi/style.css
+  d_sway:
+    src: config/sway
+    dst: ~/.config/sway/
+  d_waybar:
+    src: config/waybar
+    dst: ~/.config/waybar/
+  d_wofi:
+    src: config/wofi
+    dst: ~/.config/wofi/
   f_zsh_aliases:
     src: zsh_aliases
     dst: ~/.zsh_aliases
-  d_plugins:
+  d_nvim_plugins:
     src: config/nvim/lua/custom/plugins
     dst: ~/.config/nvim/lua/custom/plugins
-  d_plugin:
-    src: config/nvim/after/plugin
-    dst: ~/.config/nvim/after/plugin
-  d_after:
+  d_nvim_after:
     src: config/nvim/after
     dst: ~/.config/nvim/after
 profiles:
   fedora:
     dotfiles:
-    - d_plugins
-    - d_after
+    - d_nvim_plugins
+    - d_nvim_after
     - f_zshrc
     - f_p10k.zsh
-    - f_btop.conf
-    - f_foot.ini
-    - f_config
-    - f_bindings.json
-    - f_settings.json
-    - f_config.conf
-    - f_commands_full.py
-    - f_commands.py
-    - f_rc.conf
-    - f_rifle.conf
-    - f_scope.sh
-    - f_sway_config
-    - f_waybar_config-float
-    - f_style-float.css
-    - f_wofi_config
-    - f_wofi_style.css
+    - d_btop
+    - d_foot
+    - d_mako
+    - d_micro
+    - d_neofetch
+    - d_ranger
+    - d_sway
+    - d_waybar
+    - d_wofi
     - f_zsh_aliases
   mac:
     dotfiles:
-    - d_plugins
-    - d_after
+    - d_nvim_plugins
+    - d_nvim_after
     - f_zshrc
     - f_brewfile
     - f_zprofile
