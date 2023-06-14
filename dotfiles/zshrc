@@ -23,10 +23,20 @@ autoload -Uz _zinit
 ## End of Zinit's installer chunk
 
 # EXPORTS OPTs
-export FZF_DEFAULT_COMMAND="fd --type file --follow --hidden --exclude .git"
+export FZF_DEFAULT_COMMAND="fd --type f --strip-cwd-prefix --hidden"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND="$FZF_DEFAULT_COMMAND --type d"
-export EDITOR="micro"
+export FZF_CTRL_T_OPTS="
+   --preview 'bat -n --color=always {}'
+   --bind 'ctrl-/:change-preview-window(down|hidden|)'"
+ export FZF_CTRL_R_OPTS="
+  --preview 'echo {}' --preview-window up:3:hidden:wrap
+  --bind 'ctrl-/:toggle-preview'
+  --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
+  --color header:italic
+  --header 'Press CTRL-Y to copy command into clipboard'"
+export FZF_ALT_C_OPTS="--preview 'tree -C {}'"
+export EDITOR="nvim"
 export VISUAL="micro"
 export LC_ALL=pt_BR.UTF-8
 export LANG=pt_BR.UTF-8

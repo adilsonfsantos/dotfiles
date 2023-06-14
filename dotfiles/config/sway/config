@@ -24,7 +24,7 @@
 
   ##  Programs
     set {
-      $term foot
+      $term kitty
       $menu wofi | xargs swaymsg exec --
     }
 
@@ -92,16 +92,6 @@
         $mod2+9 move container to workspace number 9
         $mod2+0 move container to workspace number 10
       }
-
-
-set { 
-  $switch swaymsg -t get_tree | \
-    jq  -r  '.nodes[].nodes[] | if .nodes then [recurse(.nodes[])] else [] end + .floating_nodes | .[] | select(.nodes==[]) | ((.id | tostring) + " " + .name)' | \
-      wofi --show dmenu | { \
-        read -r id name
-        $swaymsg "[con_id=$id]" focus
-      }
-}
 
 bindsym {
   $mod2+Tab exec $switch
@@ -182,11 +172,25 @@ bindsym {
 # clipman history
 bindsym $mod2+v exec clipman pick -t wofi
 
-# Screenshot
-bindsym $mod+Print exec grim -g "$(slurp)" - | swappy -f -
+# Screenshot 
+  bindsym {
+    # Screenshot focused screen
+    Print exec grim -o $(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name')
 
-# Screenshot selected window
-bindsym $mod2+Print exec grim -g "$(swaymsg -t get_tree | jq -r '.. | select(.pid? and .visible?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"' | slurp)" - | swappy -f -
+    # Screenshot focused window
+    $mod+Print exec grim -g "$(swaymsg -t get_tree | jq -j '.. | select(.type?) | select(.focused).rect | "\(.x),\(.y) \(.width)x\(.height)"')"
+
+    # Screenshot region
+    $mod2+Print exec slurp | grim -g -
+  }
+
+# Workspaces
+assign [app_id="firefox"]       workspace number 1
+assign [app_id="foot"]          workspace number 2
+assign [app_id="kitty"]         workspace number 2
+assign [app_id="sublime_text"]  workspace number 4
+assign [app_id="^nautilus"]     workspace number 4
+assign [app_id="sublime_merge"] workspace number 5
 
 # Status Bar
   bar swaybar_command waybar
@@ -213,13 +217,10 @@ include /etc/sway/config.d/*
 # Window behaviour
   ## Always float certain windows
   for_window {
-    [app_id=".*"]                                     floating enable
     [title="(?:Open|Save) (?:File|Folder|As)"]        floating enable
     [app_id="mpv"]                                    floating enable, resize 960 540
-    [app_id="nautilus"]                               floating enable, resize 960 540
     [title="^Picture-in-Picture$"]                    floating enable, sticky enable,
     [title="^Picture-in-Picture$"]                    resize 800 450
-    [title="^Picture-in-Picture$"]                    move position 1107 534
   }
 
 # bindsym $mod+c move absolute position center

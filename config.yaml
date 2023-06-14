@@ -82,6 +82,9 @@ dotfiles:
   f_com.googlecode.iterm2.plist:
     src: com.googlecode.iterm2.plist
     dst: ~/com.googlecode.iterm2.plist
+  f_ignore:
+    src: ignore
+    dst: ~/.ignore
 profiles:
   fedora:
     dotfiles:
@@ -99,6 +102,7 @@ profiles:
     - d_waybar
     - d_wofi
     - f_zsh_aliases
+    - f_ignore
   mac:
     dotfiles:
     - d_nvim_plugins
@@ -108,3 +112,4 @@ profiles:
     - f_zprofile
     - f_zsh_aliases
     - f_com.googlecode.iterm2.plist
+    - f_ignore
