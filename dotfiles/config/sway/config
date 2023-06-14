@@ -49,7 +49,7 @@
   }
 
 # Behavior
-  focus_follows_mouse 	yes
+  focus_follows_mouse 	no
   seat * hide_cursor 10000
 
 # Key bindings
@@ -217,10 +217,11 @@ include /etc/sway/config.d/*
 # Window behaviour
   ## Always float certain windows
   for_window {
-    [title="(?:Open|Save) (?:File|Folder|As)"]        floating enable
-    [app_id="mpv"]                                    floating enable, resize 960 540
-    [title="^Picture-in-Picture$"]                    floating enable, sticky enable,
-    [title="^Picture-in-Picture$"]                    resize 800 450
+    [title="(?:Open|Save) (?:File|Folder|As)"]      floating enable
+    [app_id="mpv"]                                  floating enable, resize 960 540
+    [title="^Picture-in-Picture$"]                  floating enable, sticky enable
+    [title="^Picture-in-Picture$"]                  resize 800 450
+    [app_id="(?:askpass)"]                          floating enable
   }
 
 # bindsym $mod+c move absolute position center
