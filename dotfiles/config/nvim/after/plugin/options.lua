@@ -13,5 +13,4 @@ opt.incsearch = true
 
 opt.scrolloff = 8
 
-opt.textwidth = 60
-opt.colorcolumn = "60"
+opt.linebreak = true
