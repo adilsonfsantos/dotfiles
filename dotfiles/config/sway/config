@@ -2,6 +2,8 @@
   exec mako
   exec wl-paste -t text --watch clipman store
   exec wl-paste -p -t text --watch clipman store -P --histpath="~/.local/share/clipman-primary.json"
+  exec --no-startup-id /usr/lib/polkit-1/polkit-agent-helper-1 &
+  exec --no-startup-id /usr/libexec/polkit-gnome-authentication-agent-1 &
 
   exec_always {
     gsettings set org.gnome.desktop.interface {
