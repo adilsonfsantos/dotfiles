@@ -1,16 +1,16 @@
 # Autostart
   exec mako
-  exec wl-paste -t text --watch clipman store
-  exec wl-paste -p -t text --watch clipman store -P --histpath="~/.local/share/clipman-primary.json"
+  exec wl-paste -p --watch clipman --no-persist
   exec --no-startup-id /usr/lib/polkit-1/polkit-agent-helper-1 &
   exec --no-startup-id /usr/libexec/polkit-gnome-authentication-agent-1 &
+  exec easyeffects --gapplication-service
 
   exec_always {
     gsettings set org.gnome.desktop.interface {
         color-scheme 'prefer-dark'
         font-name 'Inter 11'
         document-font-name 'Inter 11'
-        monospace-font-name 'JetBrainsMono 11'
+        monospace-font-name 'JetBrainsMono Nerd Font 11'
   }
 }
 # Variables
@@ -32,8 +32,7 @@
 
   ##  Miscellaneous
     set {
-        $resize_factor  48px
-        $session_mode   "Session"
+        $resize_factor  1px
     }
 
 # Output configuration
@@ -95,10 +94,6 @@
         $mod2+0 move container to workspace number 10
       }
 
-bindsym {
-  $mod2+Tab exec $switch
-}
-
   ## Layout:
     bindsym {
       ### Make the current focus fullscreen
@@ -152,7 +147,7 @@ bindsym {
     $mod+$right focus right
   }
 
-  # Move the focused window with the same
+  ## Move the focused window with the same
   bindsym {
     $mod2+$left move left
     $mod2+$down move down
@@ -160,7 +155,7 @@ bindsym {
     $mod2+$right move right
   }
 
-## Media keys
+# Media keys
   bindsym {
     XF86AudioRaiseVolume exec wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 1%+
     XF86AudioLowerVolume exec wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 1%-
@@ -172,40 +167,40 @@ bindsym {
   }
 
 # clipman history
-bindsym $mod2+v exec clipman pick -t wofi
+  bindsym $mod2+v exec clipman pick -t wofi
 
 # Screenshot 
   bindsym {
-    # Screenshot focused screen
-    Print exec grim -o $(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name')
+    ## Screenshot focused screen
+    Print exec grim -o $(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name') && notify-send -u low "Captura de tela salva"
 
-    # Screenshot focused window
-    $mod+Print exec grim -g "$(swaymsg -t get_tree | jq -j '.. | select(.type?) | select(.focused).rect | "\(.x),\(.y) \(.width)x\(.height)"')"
+    ## Screenshot focused window
+    $mod+Print exec swaymsg -t get_tree | jq -j '.. | select(.type?) | select(.focused).rect | "\(.x),\(.y) \(.width)x\(.height)"' | grim -g - && notify-send -u low "Captura de tela salva"
+    ##https://www.reddit.com/r/swaywm/comments/kihm15/comment/ggqxl5q/?utm_source=share&utm_medium=web2x&context=3
 
-    # Screenshot region
-    $mod2+Print exec slurp | grim -g -
+    ## Screenshot region
+    $mod2+Print exec grim -g "$(slurp)" && notify-send -u low "Captura de tela salva"
   }
 
 # Workspaces
 assign [app_id="firefox"]       workspace number 1
 assign [app_id="foot"]          workspace number 2
 assign [app_id="kitty"]         workspace number 2
-assign [app_id="sublime_text"]  workspace number 4
-assign [app_id="^nautilus"]     workspace number 4
+assign [app_id="sublime_text"]  workspace number 3
 assign [app_id="sublime_merge"] workspace number 5
 
 # Status Bar
   bar swaybar_command waybar
 
 # Styling
-font pango: Inter-Light 11
+  font pango: Inter-Light 11
 
   ## Window decoration
     ### class               border  backgr. text    indicator child_border
-    client.focused          #bb9af7 #bb9af7 #a9b1d6
+    client.focused          #bb9af7 #1a1b26 #a9b1d6
     # client.focused_inactive
-    client.unfocused        #1a1b26 #1a1b26 #a9b1d6
-    client.urgent           #ff9e64 #ff9e64 #a9b1d6
+    client.unfocused        #7aa2f7 #1a1b26 #a9b1d6
+    client.urgent           #ff9e64 #1a1b26 #a9b1d6
 
   ## Gaps
     default_border pixel 2

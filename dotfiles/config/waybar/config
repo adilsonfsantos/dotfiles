@@ -1,84 +1,78 @@
 {
 	"spacing": 8,
 	"position": "top",
-	"modules-left": ["sway/workspaces",
-	"sway/mode",
-	"tray"],
+	"modules-left": ["sway/workspaces", "sway/mode"],
 	"modules-center": ["sway/window"],
-	"modules-right": ["network","wireplumber", "clock","custom/power"],
+	"modules-right": ["network", "wireplumber", "clock", "custom/power"],
 
 	"sway/workspaces": {
 		"disable-scroll": true,
 		"all-outputs": true,
+		"format": "{icon}",
 	 	"persistent_workspaces": {
-	 		"1": [],
+			"1": [],
 	 		"2": [],
 	 		"3": [],
 	 		"4": [],
-            "5": [],
-            "6": [],
-            "7": []
+			"5": []
+		},
+		"format-icons": {
+			"1": "www 󰈹",
+			"2": "term 󰆍",
+			"3": "note 󰏫",
+			"4": "tmp 󰀼",
+			"5": "git 󰊢",
+			"urgent": "󰀧"
 		}
-  },
+	},
 
 	"sway/window": {
-		"format": "{}",
-		"max-length": 120,
+		"format": "{app_id}",
+		"max-length": 60,
 		"tooltip": false
 	},
 
 	"sway/mode": {
-    "format": "{}",
-    "max-length": 100,
+		"format": "{}",
+		"max-length": 100,
 		"tooltip": false
-},
+	},
 
 	"clock": {
-		"format": "󰅐 {:%H:%M}",
-					"tooltip-format": "<big>{:%B %Y}</big>\n<tt><small>{calendar}</small></tt>",
-					"format-alt": "󰸗 {:%d-%m-%Y}"
+		"format": "󰃰 {:%a. %d de %B, %R}",
+		"tooltip-format": "<tt><small>{calendar}</small></tt>",
+		"calendar": {
+		    "format": {
+			"months":   "<span color='#c0caf5'><b>{}</b></span>",
+			"weekdays": "<span color='#7dcfff'><b>{}</b></span>",
+			"days":     "<span color='#c0caf5'>{}</span>",
+			"today":    "<span color='#e0af68'><b><u>{}</u></b></span>"
+		    }
+		}
 	},
 
 	"custom/power": {
 		"format":"󰐥",
 		"on-click":
-		"swaynag -t warning -m 'Encerrar Sessão/Desligar' -b 'Encerrar Sessão' 'swaymsg exec swaymsg exit' -b 'Reiniciar' 'swaymsg exec systemctl reboot' -b 'Desligar' 'swaymsg exec systemctl poweroff' --dismiss-button='Cancelar' --background=#16161e --text=#a9b1d6 --border-bottom=#565f89 --button-background=#e0af68 --button-text=#16161e --border-bottom-size=1 --message-padding=8 --button-gap=16 --button-margin-right=16 --button-border-size=0 --button-padding=4 --font='JetBrainsMono Nerd Font 9'",
+		"swaynag -t warning -m 'Encerrar Sessão/Desligar' -b 'Encerrar Sessão' 'swaymsg exec swaymsg exit' -b 'Reiniciar' 'swaymsg exec systemctl reboot' -b 'Desligar' 'swaymsg exec systemctl poweroff' --dismiss-button='Cancelar' --background=#1a1b26 --text=#a9b1d6 --border-bottom=#101014 --button-background=#e0af68 --button-text=#16161e --border-bottom-size=1 --message-padding=8 --button-gap=16 --button-margin-right=8 --button-border-size=0 --button-padding=4 --font='JetBrainsMono Nerd Font 9'",
 		// https://github.com/Alexays/Waybar/issues/202#issuecomment-484342124
 		"tooltip": false
 	},
 
-
-	"pulseaudio": {
+	"wireplumber": {
+		"format": "{icon} {volume:>3}%",
 		"on-click": "exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
-		"on-click-right": "easyeffects",
-		"format": "{icon} {volume}%",
-				"format-muted": "󰝟 0%",
-        "format-icons": {
-						"muted": "󰝟",
-            "headphone": "󰋋",
-            "headset": "󰋎",
-            "default": ["󰕿", "󰖀", "󰖀", "󰖀", "󰖀", "󰕾", "󰕾", "󰕾", "󰕾", "󰕾"]
-        }
-    },
-
-		"wireplumber": {
-			"format": "{volume}%",
-			"on-click": "exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
-			"on-click-right": "easyeffects",
-			"format-muted": "󰝟 0%",
-			"format-icons": ["󰕿", "󰖀", "󰖀", "󰖀", "󰖀", "󰕾", "󰕾", "󰕾", "󰕾", "󰕾"]
+		"on-click-right": "pavucontrol",
+		"format-muted": "󰝟   0%",
+		"format-icons": ["󰕿", "󰖀", "󰕾", "󰕾", "󰕾"]
 	},
 
 	"network": {
 		"format": "{ifname}",
 		"interval": 1,
-		"format-wifi": "{signalStrength}%) 󰖩",
-		"format-ethernet": "󰁅{bandwidthDownBytes:10} 󰁝{bandwidthUpBytes:10} 󰌗",
-		"format-disconnected": "󰁅{bandwidthDownBytes:10} 󰁝{bandwidthUpBytes:10} 󰅖",
+		"format-ethernet": "󰁅{bandwidthDownBytes:>10} | 󰁝{bandwidthUpBytes:>10}",
+		"format-disconnected": "󰲛 Desconectado",
 		"tooltip-format": "{ifname} via {gwaddr}",
-		"tooltip-format-wifi": "{essid} ({signalStrength}%) 󰖩",
-		"tooltip-format-disconnected": "Desconectado 󰖪",
-		"tooltip-format-ethernet": "",
 		"max-length": 100
 	}
 }

@@ -49,7 +49,7 @@ alias nowdate="date +'%d-%m-%Y'"
 alias nowtime="date +'%T'"
 
 # ALIASES - Utilities
-alias reload= "exec $SHELL -l -i"
+alias rld= "source ~/.zshrc"
 alias path="echo "$PATH" | tr : '\n'"
 {%@@ if profile == "fedora" @@%}
 alias swaytree= "swaymsg -t get_tree | rg"

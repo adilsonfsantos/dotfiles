@@ -1,20 +1,31 @@
-font=Inter Light 10
-background-color=#1a1b26
-text-color=#a9b1d6
-sort=+time
-margin=8
+# GLOBAL CONFIGURATION OPTIONS
+max-history=100
+sort=-time
+
+# BINDING OPTIONS
+on-button-middle=dismiss-all
+on-notify=exec mpv /usr/share/sounds/freedesktop/stereo/message.oga
+
+
+
+font=JetBrainsMono Nerd Font 10
+margin=16
 padding=8
-border-size=2
 border-color=#1a1b26
-border-radius=0
-icon-location=left
 layer=overlay
+
+background-color=#1a1b26
+progress-color=over #89b4fa
+text-color=#a9b1d6
 
 [urgency=low]
 border-color=#414868
+default-timeout=2000
 
 [urgency=normal]
 border-color=#e0af68
+default-timeout=5000
 
 [urgency=critical]
 border-color=#f7768e
+default-timeout=0
