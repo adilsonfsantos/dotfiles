@@ -1,12 +1,11 @@
 show=drun
 #width=500
 width=40%
-#height=440
 always_parse_args=true
 print_command=true
 layer=overlay
 insensitive=true
-term=foot
+term=kitty
 prompt=
 allow_images=true
 gtk-dark=true

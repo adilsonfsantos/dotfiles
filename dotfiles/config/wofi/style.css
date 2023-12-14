@@ -4,35 +4,36 @@
 
 #window {
   margin: 0px;
-  background-color: #16161e;
+  background-color: #15161E;
   font-family: "JetBrainsMono Nerd Font";
   font-size: 14px;
   line-height: 1.25;
+  border-radius: 16px;
   }
   
   #outer-box {
-  margin: 12px;
+  margin: 24px;
   border: none;
-  background-color: #16161e;
+  background-color: #15161E;
   }
 
   #input {
   border-radius: 0;
-  border: 1px solid #1a1b26;
-  color: #a9b1d6;
-  background-color: #0f0f14;
+  border: 1px solid #15161E;
+  color: #c0caf5;
+  background-color: #15161E;
   height: 32px;
   padding: 8px 0;
   font-size: 14px;
   }
 
     #input image {
-    color: #a9b1d6;
+    color: #c0caf5;
     margin: 0 10px;
   }
 
   #input:focus {
-    border: 1px solid #565f89;
+    border: 1px solid #15161E;
   }
 
   #scroll {
@@ -43,36 +44,38 @@
 
   #inner-box {
   border: none;
-  background-color: #16161e;
+  background-color: #15161E;
   }
 
   #text {
   margin: 5px;
   border: none;
-  color: #a9b1d6;
+  color: #c0caf5;
   }
 
   #unselected {
-    color: #565f89;
+    color: #c0caf5;
   }
 
   #entry:selected, #selected {
-    background-color: #1a1b26;
+    /* background-color: #15161E; */
     font-weight: normal;
     color: #a9b1d6;
   }
   
   #entry:focus {
-  border: 1px solid #bb9af7;
+  border: 1px solid #BB9AF7;
   }
 
   #entry {
-    background-color: #16161e;
+    background-color: #1A1B26;
     border-radius: none;
-    color: #98a8c5;
+    color: #c0caf5;
     padding: 16px 16px;
     border: 1px solid transparent;
     box-shadow: inset 0rem 0px rgba(0, 0, 0, 0);
+    border-radius: 8px;
+    margin: 8px;
   }
 
   #entry image {

@@ -3,7 +3,7 @@
   exec wl-paste -p --watch clipman --no-persist
   exec --no-startup-id /usr/lib/polkit-1/polkit-agent-helper-1 &
   exec --no-startup-id /usr/libexec/polkit-gnome-authentication-agent-1 &
-  exec easyeffects --gapplication-service
+  #exec easyeffects --gapplication-service
 
   exec_always {
     gsettings set org.gnome.desktop.interface {
