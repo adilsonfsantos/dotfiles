@@ -44,21 +44,22 @@ export YSU_MESSAGE_POSITION="after"
 # EXPORTS DIRs
 export DOTREPO="$HOME/dotfiles"
 export DEV="$HOME/Dev"
-{%@@ if profile == "fedora" @@%}
 export PATH="$HOME/.nodenv/bin:$PATH"
+{%@@ if profile == "fedora" @@%}
 export PATH="$HOME/.rbenv/bin:$PATH"
-if [ -d "$HOME/bin" ] ; then
-  export PATH="$HOME/bin:$PATH"
-fi
-{%@@ elif profile == "mac" @@%}
-export PATH="/usr/local/sbin:$PATH"
-{%@@ endif @@%}
 export PNPM_HOME="/home/adilson/.local/share/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+if [ -d "$HOME/bin" ] ; then
+  export PATH="$HOME/bin:$PATH"
+fi
+{%@@ elif profile == "mac" @@%}
+export PATH="/usr/local/sbin:$PATH"
+{%@@ endif @@%}
+
 # tabtab source for packages
 # uninstall by removing these lines
 [[ -f ~/.config/tabtab/zsh/__tabtab.zsh ]] && . ~/.config/tabtab/zsh/__tabtab.zsh || true
@@ -129,9 +130,8 @@ fi
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
 eval "$(thefuck --alias)"
-{%@@ if profile == "fedora" @@%}
 eval "$(nodenv init - --no-rehash)"
-{%@@ elif profile == "mac" @@%}
+{%@@ if profile == "mac" @@%}
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
