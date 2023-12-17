@@ -16,16 +16,22 @@ layer=overlay
 
 background-color=#1a1b26
 progress-color=over #89b4fa
-text-color=#a9b1d6
+text-color=#c0caf5
 
 [urgency=low]
-border-color=#414868
+background-color=#16161e
+text-color=#c0caf5
+border-color=#c0caf5
 default-timeout=2000
 
 [urgency=normal]
-border-color=#e0af68
+background-color=#1a1b26
+text-color=#c0caf5
+border-color=#c0caf5
 default-timeout=5000
 
 [urgency=critical]
-border-color=#f7768e
+background-color=#292e42
+text-color=#db4b4b
+border-color=#db4b4b
 default-timeout=0

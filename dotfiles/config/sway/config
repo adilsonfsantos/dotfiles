@@ -38,7 +38,7 @@
 # Output configuration
   output * {
     resolution 1920x1080@74.986Hz
-    background ~/Imagens/880765.png fill
+    background ~/Imagens/warm-tones-wallpaper.jpg fill
     adaptive_sync on
   }
 

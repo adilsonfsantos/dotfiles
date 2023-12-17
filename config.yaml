@@ -3,13 +3,13 @@ config:
   create: true
   dotpath: dotfiles
   cmpignore:
-    - '*.log'
+  - '*.log'
   upignore:
-    - '*.log'
+  - '*.log'
   instignore:
-    - '*.log'
+  - '*.log'
   impignore:
-    - '*.log'
+  - '*.log'
 
 dotfiles:
   f_zshrc:
@@ -31,11 +31,11 @@ dotfiles:
     src: config/btop
     dst: ~/.config/btop/
     cmpignore:
-      - '*/themes'
+    - '*/themes'
     upignore:
-      - '*/themes'
+    - '*/themes'
     instignore:
-      - '*/themes'
+    - '*/themes'
   d_foot:
     src: config/foot
     dst: ~/.config/foot/
@@ -46,14 +46,14 @@ dotfiles:
     src: config/micro
     dst: ~/.config/micro/
     cmpignore:
-      - '*/backups'
-      - '*/buffers'
+    - '*/backups'
+    - '*/buffers'
     upignore:
-      - '*/backups'
-      - '*/buffers'
+    - '*/backups'
+    - '*/buffers'
     instignore:
-      - '*/backups'
-      - '*/buffers'
+    - '*/backups'
+    - '*/buffers'
   d_neofetch:
     src: config/neofetch
     dst: ~/.config/neofetch/
@@ -85,31 +85,36 @@ dotfiles:
   f_ignore:
     src: ignore
     dst: ~/.ignore
+  f_warm-tones-wallpaper.jpg:
+    src: Imagens/warm-tones-wallpaper.jpg
+    dst: ~/Imagens/warm-tones-wallpaper.jpg
+    chmod: '777'
 profiles:
   fedora:
     dotfiles:
-      - d_nvim_plugins
-      - d_nvim_after
-      - f_zshrc
-      - f_p10k.zsh
-      - d_btop
-      - d_foot
-      - d_mako
-      - d_micro
-      - d_neofetch
-      - d_ranger
-      - d_sway
-      - d_waybar
-      - d_wofi
-      - f_zsh_aliases
-      - f_ignore
+    - d_nvim_plugins
+    - d_nvim_after
+    - f_zshrc
+    - f_p10k.zsh
+    - d_btop
+    - d_foot
+    - d_mako
+    - d_micro
+    - d_neofetch
+    - d_ranger
+    - d_sway
+    - d_waybar
+    - d_wofi
+    - f_zsh_aliases
+    - f_ignore
+    - f_warm-tones-wallpaper.jpg
   mac:
     dotfiles:
-      - d_nvim_plugins
-      - d_nvim_after
-      - f_zshrc
-      - f_brewfile
-      - f_zprofile
-      - f_zsh_aliases
-      - f_com.googlecode.iterm2.plist
-      - f_ignore
+    - d_nvim_plugins
+    - d_nvim_after
+    - f_zshrc
+    - f_brewfile
+    - f_zprofile
+    - f_zsh_aliases
+    - f_com.googlecode.iterm2.plist
+    - f_ignore
