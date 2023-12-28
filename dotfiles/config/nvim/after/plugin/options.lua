@@ -2,18 +2,16 @@ local opt = vim.opt
 
 opt.relativenumber = true
 
+opt.colorcolumn = "100"
+opt.expandtab = true
+opt.shiftwidth = 2
+opt.smartindent = true
 opt.textwidth = 100
 opt.tabstop = 2
-opt.softtabstop = 2
-opt.shiftwidth = 2
-opt.expandtab = true
-
-opt.smartindent = true
 
 opt.incsearch = true
-
-opt.scrolloff = 8
+opt.inccommand = "split"
 
 opt.linebreak = true
 
-opt.colorcolumn = "100"
+opt.scrolloff = 8

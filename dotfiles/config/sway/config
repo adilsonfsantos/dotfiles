@@ -32,7 +32,7 @@
 
   ##  Miscellaneous
     set {
-        $resize_factor  1px
+        $resize_factor  8px
     }
 
 # Output configuration
@@ -172,11 +172,14 @@
 # Screenshot 
   bindsym {
     ## Screenshot focused screen
-    Print exec grim -o $(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name') && notify-send -u low "Captura de tela salva"
+    Print exec grim -o $(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name') \
+      && notify-send -u low "Captura de tela salva"
 
     ## Screenshot focused window
-    $mod+Print exec swaymsg -t get_tree | jq -j '.. | select(.type?) | select(.focused).rect | "\(.x),\(.y) \(.width)x\(.height)"' | grim -g - && notify-send -u low "Captura de tela salva"
-    ##https://www.reddit.com/r/swaywm/comments/kihm15/comment/ggqxl5q/?utm_source=share&utm_medium=web2x&context=3
+    $mod+Print exec swaymsg -t get_tree | jq -j \
+      '.. | select(.type?) | select(.focused).rect | "\(.x),\(.y) \(.width)x\(.height)"' \
+      | grim -g - && notify-send -u low "Captura de tela salva"
+    ##https://www.reddit.com/r/swaywm/comments/kihm15/comment/ggqxl5q/
 
     ## Screenshot region
     $mod2+Print exec grim -g "$(slurp)" && notify-send -u low "Captura de tela salva"
