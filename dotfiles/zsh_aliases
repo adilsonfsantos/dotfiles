@@ -9,7 +9,7 @@ alias rsync="rsync --info=PROGRESS2 -v"
 alias df="duf"
 alias grep="rg"
 alias wget="aria2c -c"
-alias ls="exa"
+alias ls="eza"
 alias du="dust -b"
 
 # ALIASES - Navigation
