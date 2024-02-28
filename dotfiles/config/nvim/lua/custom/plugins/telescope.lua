@@ -14,7 +14,7 @@ require('telescope').setup{
   defaults = {
     vimgrep_arguments = vimgrep_arguments,
     -- Default configuration for telescope goes here:
-    -- config_key = value,
+    -- config_key = value,  
     file_ignore_patterns = {
     },
     mappings = {
