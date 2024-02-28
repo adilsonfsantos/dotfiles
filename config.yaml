@@ -3,13 +3,13 @@ config:
   create: true
   dotpath: dotfiles
   cmpignore:
-  - '*.log'
+    - "*.log"
   upignore:
-  - '*.log'
+    - "*.log"
   instignore:
-  - '*.log'
+    - "*.log"
   impignore:
-  - '*.log'
+    - "*.log"
 
 dotfiles:
   f_zshrc:
@@ -31,11 +31,11 @@ dotfiles:
     src: config/btop
     dst: ~/.config/btop/
     cmpignore:
-    - '*/themes'
+      - "*/themes"
     upignore:
-    - '*/themes'
+      - "*/themes"
     instignore:
-    - '*/themes'
+      - "*/themes"
   d_foot:
     src: config/foot
     dst: ~/.config/foot/
@@ -46,21 +46,21 @@ dotfiles:
     src: config/micro
     dst: ~/.config/micro/
     cmpignore:
-    - '*/backups'
-    - '*/buffers'
+      - "*/backups"
+      - "*/buffers"
     upignore:
-    - '*/backups'
-    - '*/buffers'
+      - "*/backups"
+      - "*/buffers"
     instignore:
-    - '*/backups'
-    - '*/buffers'
+      - "*/backups"
+      - "*/buffers"
   d_neofetch:
     src: config/neofetch
     dst: ~/.config/neofetch/
   d_ranger:
     src: config/ranger
     dst: ~/.config/ranger/
-    chmod: '755'
+    chmod: "755"
   d_sway:
     src: config/sway
     dst: ~/.config/sway/
@@ -88,7 +88,7 @@ dotfiles:
   f_warm-tones-wallpaper.jpg:
     src: Imagens/warm-tones-wallpaper.jpg
     dst: ~/Imagens/warm-tones-wallpaper.jpg
-    chmod: '777'
+    chmod: "777"
   f_default.profile:
     src: config/sublime-text/Packages/sublime-profiles/Data/Default.profile
     dst: ~/.config/sublime-text/Packages/sublime-profiles/Data/Default.profile
@@ -101,40 +101,50 @@ dotfiles:
   d_yt-dlp:
     src: config/yt-dlp
     dst: ~/.config/yt-dlp
+  f_tokyonight_night.tmtheme:
+    src: Library/Application Support/Sublime Text 3/Packages/tokyonight_night.tmTheme
+    dst: ~/Library/Application Support/Sublime Text 3/Packages/tokyonight_night.tmTheme
+  f_data_default.profile:
+    src: Library/Application Support/Sublime Text 3/Packages/sublime-profiles/Data/Default.profile
+    dst: ~/Library/Application Support/Sublime Text 3/Packages/sublime-profiles/Data/Default.profile
+  f_data_writer.profile:
+    src: Library/Application Support/Sublime Text 3/Packages/sublime-profiles/Data/Writer.profile
+    dst: ~/Library/Application Support/Sublime Text 3/Packages/sublime-profiles/Data/Writer.profile
 profiles:
   fedora:
     dotfiles:
-    - d_nvim_plugins
-    - d_nvim_after
-    - f_zshrc
-    - f_p10k.zsh
-    - d_btop
-    - d_foot
-    - d_mako
-    - d_micro
-    - d_neofetch
-    - d_ranger
-    - d_sway
-    - d_waybar
-    - d_wofi
-    - f_zsh_aliases
-    - f_ignore
-    - f_warm-tones-wallpaper.jpg
-    - f_default.profile
-    - f_writer.profile
-    - d_mpv
-    - d_yt-dlp
+      - d_nvim_plugins
+      - d_nvim_after
+      - f_zshrc
+      - f_p10k.zsh
+      - d_btop
+      - d_foot
+      - d_mako
+      - d_micro
+      - d_neofetch
+      - d_ranger
+      - d_sway
+      - d_waybar
+      - d_wofi
+      - f_zsh_aliases
+      - f_ignore
+      - f_warm-tones-wallpaper.jpg
+      - f_default.profile
+      - f_writer.profile
+      - d_mpv
+      - d_yt-dlp
   mac:
     dotfiles:
-    - d_nvim_plugins
-    - d_nvim_after
-    - f_zshrc
-    - f_brewfile
-    - f_zprofile
-    - f_zsh_aliases
-    - f_com.googlecode.iterm2.plist
-    - f_ignore
-    - f_default.profile
-    - f_writer.profile
-    - d_mpv
-    - d_yt-dlp
+      - d_nvim_plugins
+      - d_nvim_after
+      - f_zshrc
+      - f_brewfile
+      - f_zprofile
+      - f_zsh_aliases
+      - f_com.googlecode.iterm2.plist
+      - f_ignore
+      - f_default.profile
+      - f_writer.profile
+      - f_tokyonight_night.tmtheme
+      - f_data_default.profile
+      - f_data_writer.profile
