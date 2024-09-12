@@ -1,9 +1,8 @@
 # Autostart
   exec mako
   exec wl-paste -p --watch clipman --no-persist
-  exec --no-startup-id /usr/lib/polkit-1/polkit-agent-helper-1 &
-  exec --no-startup-id /usr/libexec/polkit-gnome-authentication-agent-1 &
-  #exec easyeffects --gapplication-service
+  exec /usr/lib/polkit-1/polkit-agent-helper-1 &
+  exec /usr/libexec/polkit-gnome-authentication-agent-1
 
   exec_always {
     gsettings set org.gnome.desktop.interface {
@@ -27,7 +26,8 @@
   ##  Programs
     set {
       $term kitty
-      $menu wofi | xargs swaymsg exec --
+      # $menu wofi | xargs swaymsg exec --
+      $menu fuzzel
     }
 
   ##  Miscellaneous
@@ -38,16 +38,16 @@
 # Output configuration
   focus output DP-1
 
+  output * bg ~/Imagens/BLACK_III_desktop-1.jpg fill
+
   output DP-1 {
     resolution 1920x1080@74.986Hz
-    background ~/Imagens/warm-tones-wallpaper.jpg fill
     adaptive_sync on
     pos 1360 0
   }
 
   output HDMI-A-1 {
     resolution 1360x768@60.015Hz
-    background ~/Imagens/warm-tones-wallpaper.jpg fill
     adaptive_sync on
     pos 0 0
   }
@@ -57,6 +57,10 @@
     xkb_layout "br"
     xkb_variant "abnt2"
     xkb_model "pc101"
+  }
+
+  input "type:pointer" {
+    natural_scroll "enable"
   }
 
 # Behavior
@@ -138,6 +142,15 @@
   }
   bindsym $mod+r mode "resize"
 
+  # A special mode for passing any keybindings to the focused application
+
+  mode "passthrough" {
+    bindsym $mod+Pause mode default
+  }
+  
+  bindsym $mod+Pause mode "passthrough"
+
+
   ## Drag floating windows by holding down $mod and left mouse button.
   ## Resize them with right mouse button + $mod.
   ## Despite the name, also works for non-floating windows.
@@ -206,9 +219,6 @@
   workspace 3 output DP-1
   workspace 4 output DP-1
   workspace 5 output DP-1 
-  workspace 6 output HDMI-A-1
-  workspace 7 output HDMI-A-1
-  workspace 8 output HDMI-A-1
   workspace 9 output HDMI-A-1
   workspace 10 output HDMI-A-1
 
@@ -220,14 +230,13 @@
 
   ## Window decoration
     ### class               border  backgr. text    indicator child_border
-    client.focused          #bb9af7 #1a1b26 #a9b1d6
-    # client.focused_inactive
-    client.unfocused        #7aa2f7 #1a1b26 #a9b1d6
-    client.urgent           #ff9e64 #1a1b26 #a9b1d6
+    client.focused          #bb9af7 #1a1b26 #a9b1d6 #e0af68 #bb9af7
+    client.focused_inactive #bb9af7 #1a1b26 #a9b1d6 #e0af68 #bb9af7
+    client.unfocused        #545c7e #292e42 #545c7e #e0af68 #545c7e
+    client.urgent           #ff9e64 #ff9364 #1a1b26 #e0af68 #ff9e64
 
-  ## Gaps
     default_border pixel 2
-    for_window [floating] border pixel 0
+    default_floating_border pixel 2
     smart_borders on
     gaps outer 0
     gaps inner 16
@@ -244,4 +253,74 @@ include /etc/sway/config.d/*
     [app_id="(?:askpass)"]                          floating enable
   }
 
-# bindsym $mod+c move absolute position center
+  # apply mark for Xwayland and wayland native browser windows
+  for_window [class="Chromium-browser"] mark Browser
+  for_window [class="Brave-browser"] mark Browser
+  for_window [class="firefox"]  mark Browser
+  for_window [app_id="Chromium-browser"] mark Browser
+  for_window [app_id="brave-browser"] mark Browser
+  for_window [app_id="firefox"] mark Browser
+
+  # inhibit scrensaver for fullscreen browser windows
+  for_window [con_mark="Browser"] {
+    inhibit_idle fullscreen
+  }
+
+  # firefox wayland screensharing indicator
+  for_window [app_id="firefox" title="Firefox — Sharing Indicator"] {
+    floating enable
+  }
+  # Display PulseAudio volume control application (both GTK and Qt varieties)
+  # as a floating window.
+
+  for_window [app_id="pavucontrol"] {
+    floating enable
+    move position center
+  }
+
+  for_window [app_id="pavucontrol-qt"] {
+    floating enable
+    move position center
+  }
+
+  for_window [app_id="lxqt-policykit-agent"] {
+    floating enable
+    move position center
+  }
+
+  for_window [app_id="polkit-gnome-authentication-agent-1"] {
+    floating enable
+    move position center
+  }
+
+# Idle and lock configuration
+#
+# This will lock your screen after 300 seconds of inactivity, then turn off
+# your displays after another 60 seconds, and turn your screens back on when
+# resumed. It will also lock your screen before your computer goes to sleep.
+# The timeouts can be customized via `$lock_timeout` and `$screen_timeout`
+# variables. For a predictable behavior, keep the `$screen_timeout` value
+# lesser than the `$lock_timeout`.
+#
+# You can also lock the screen manually by running `loginctl lock-session` or
+# add a binding for the command. Example:
+#     bindsym $mod+Shift+Escape  exec loginctl lock-session
+#
+# Note that all swaylock customizations are handled via /etc/swaylock/config and
+# can be overridden via $XDG_CONFIG_HOME/swaylock/config (~/.config/swaylock/config).
+#
+# Requires: swayidle
+# Requires: swaylock
+# Requires: /usr/bin/pkill, /usr/bin/pgrep
+
+exec LT="$lock_timeout" ST="$screen_timeout" LT=${LT:-1800} ST=${ST:-300} && \
+    swayidle -w \
+        timeout $LT 'swaylock -f' \
+        timeout $((LT + ST)) 'swaymsg "output * power off"' \
+                      resume 'swaymsg "output * power on"'  \
+        timeout $ST 'pgrep -xu "$USER" swaylock >/dev/null && swaymsg "output * power off"' \
+             resume 'pgrep -xu "$USER" swaylock >/dev/null && swaymsg "output * power on"'  \
+        before-sleep 'swaylock -f' \
+        lock 'swaylock -f' \
+        unlock 'pkill -xu "$USER" -SIGUSR1 swaylock'
+

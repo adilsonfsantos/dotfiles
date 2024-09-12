@@ -1,91 +1,90 @@
 * {
-    all:unset;
+  all: unset;
 }
 
 #window {
   margin: 0px;
-  background-color: #15161E;
+  background-color: #15161e;
   font-family: "JetBrainsMono Nerd Font";
   font-size: 14px;
-  line-height: 1.25;
   border-radius: 16px;
-  }
-  
-  #outer-box {
+}
+
+#outer-box {
   margin: 24px;
   border: none;
-  background-color: #15161E;
-  }
+  background-color: #15161e;
+}
 
-  #input {
+#input {
   border-radius: 0;
-  border: 1px solid #15161E;
+  border: 1px solid #15161e;
   color: #c0caf5;
-  background-color: #15161E;
-  height: 32px;
+  background-color: #15161e;
   padding: 8px 0;
   font-size: 14px;
-  }
+}
 
-    #input image {
-    color: #c0caf5;
-    margin: 0 10px;
-  }
+#input image {
+  color: #c0caf5;
+  margin: 0 10px;
+}
 
-  #input:focus {
-    border: 1px solid #15161E;
-  }
+#input:focus {
+  border: 1px solid #15161e;
+}
 
-  #scroll {
+#scroll {
   margin: 0px;
   margin-top: 16px;
   border: none;
-  }
+}
 
-  #inner-box {
+#inner-box {
   border: none;
-  background-color: #15161E;
-  }
+  background-color: #15161e;
+}
 
-  #text {
+#text {
   margin: 5px;
   border: none;
   color: #c0caf5;
-  }
+}
 
-  #unselected {
-    color: #c0caf5;
-  }
+#unselected {
+  color: #c0caf5;
+}
 
-  #entry:selected, #selected {
-    /* background-color: #15161E; */
-    font-weight: normal;
-    color: #a9b1d6;
-  }
-  
-  #entry:focus {
-  border: 1px solid #BB9AF7;
-  }
+#entry:selected,
+#selected {
+  /* background-color: #15161E; */
+  font-weight: normal;
+  color: #a9b1d6;
+}
 
-  #entry {
-    background-color: #1A1B26;
-    border-radius: none;
-    color: #c0caf5;
-    padding: 16px 16px;
-    border: 1px solid transparent;
-    box-shadow: inset 0rem 0px rgba(0, 0, 0, 0);
-    border-radius: 8px;
-    margin: 8px;
-  }
+#entry:focus {
+  border: 1px solid #bb9af7;
+}
 
-  #entry image {
-    margin-right: 8px;
-  }
+#entry {
+  background-color: #1a1b26;
+  border-radius: 0;
+  color: #c0caf5;
+  padding: 16px 16px;
+  border: 1px solid transparent;
+  box-shadow: inset 0rem 0px rgba(0, 0, 0, 0);
+  border-radius: 8px;
+  margin: 8px;
+}
 
-  #entry:hover {
-    background-color: #0f0f14;
-  }
+#entry image {
+  margin-right: 8px;
+}
 
-  expander {
-    color: #ffd484;
-  }
+#entry:hover {
+  background-color: #0f0f14;
+}
+
+expander {
+  color: #ffd484;
+}

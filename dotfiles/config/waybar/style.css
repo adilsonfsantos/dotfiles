@@ -1,57 +1,50 @@
 * {
+  border: none;
+  border-radius: 0px;
   font-family: "JetBrainsMono Nerd Font", "Material Design Icons Desktop";
   font-size: 12px;
 }
 
-.modules-left, .modules-center, .modules-right {
+.modules-left,
+.modules-center,
+.modules-right {
   margin-bottom: 4px;
   margin-top: 4px;
 }
 
 .modules-left {
-  margin-left: 16px;
+  margin-left: 4px;
 }
 
 .modules-right {
-  margin-right: 16px;
+  margin-right: 4px;
 }
 
-window#waybar {
+#waybar {
   background-color: #16161e;
 }
 
-#workspaces {
-  border-radius: 4px;
-}
-
 #workspaces button {
-  background-color: #292e42;
+  border-radius: 8px;
+  transition: color 400ms ease-in-out;
   border: none;
-  color: #C0CAF5;
+  color: #545c7e;
   font-size: 10px;
-  padding: 0px 8px;
-}
-
-#workspaces button:not(:last-child) {
-   margin-right: 8px;
+  padding: 0px 4px;
 }
 
 #workspaces button.focused {
-  background-color: #BB9AF7;
-  color: #16161e;
+  color: #bb9af7;
 }
 
 #workspaces button:hover {
-    box-shadow: none;
-    text-shadow: none;
-    color: #C0CAF5;
-    background: #292e42;
-    transition: none;
+  background: none;
+  box-shadow: none;
+  text-shadow: none;
 }
 
 #workspaces button.focused:hover {
-  background-color: #BB9AF7;
-  color: #16161e;
+  background: none;
 }
 
 #workspaces button.urgent {
@@ -59,8 +52,7 @@ window#waybar {
 }
 
 #window {
-  color: #C0CAF5;
-  padding: 0px 8px;
+  color: #c0caf5;
 }
 
 #waybar.empty #window {
@@ -68,30 +60,39 @@ window#waybar {
   padding: 0;
 }
 
-#mode{
-  border-radius: 4px;
+#mode {
   color: #e0af68;
   font-weight: 700;
   padding: 0px 8px;
 }
 
-#clock, #wireplumber, #network {
-  background-color: #292e42;
-  border-radius: 4px;
-  /* margin-right: 16px; */
-  color: #C0CAF5;
-  padding: 0 12px;
+#clock,
+#wireplumber,
+#network {
+  color: #c0caf5;
+  padding: 0 8px;
 }
 
 #custom-power {
-  background-color: #292e42;
-  border-radius: 4px;
   color: #f7768e;
   font-size: 16px;
   padding: 4px 4px;
 }
 
+#custom-quit,
+#custom-lock,
+#custom-reboot,
+#privacy {
+  color: #c0caf5;
+  font-size: 16px;
+  padding: 4px 4px;
+}
+
 tooltip {
-  border-radius: 4px;
-  background-color: #15161E;
+  background-color: #15161e;
+}
+
+#privacy-item>* {
+  color: #c0caf5;
+  background: none;
 }

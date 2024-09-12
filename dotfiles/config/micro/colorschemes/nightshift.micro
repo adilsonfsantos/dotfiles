@@ -13,7 +13,6 @@ color-link statement "yellow"
 
 color-link symbol "yellow"
 color-link symbol.tag "#7eddde"
-color-link symbol.brackets
 
 color-link preproc "magenta"
 

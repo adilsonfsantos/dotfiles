@@ -1,7 +1,7 @@
 {
   "caret_extra_width": 2,
   "color_scheme": "Writer Dark.sublime-color-scheme",
-  "dictionary": "Packages/Language/Portuguese (Brazilian).dic",
+  "dictionary": "Dictionaries/pt_BR.dic",
   "draw_centered": true,
   "draw_indent_guides": false,
   "draw_white_space": ["none"],
@@ -19,6 +19,7 @@
   "translate_tabs_to_spaces": true,
   "word_wrap": true,
   "wrap_width": 72,
+  "auto_complete": false,
   "ignored_packages":
   [
 		"Vintage",
@@ -27,5 +28,5 @@
   "ignored_words":
   [
 		"Dotfiles"
-	],
+  ],
 }
