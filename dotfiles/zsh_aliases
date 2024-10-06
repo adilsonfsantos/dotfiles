@@ -6,18 +6,16 @@ alias sudo="sudo"
 alias rsync="rsync --info=PROGRESS2 -v"
 
 # ALIASES - Replacements to standard commands
-alias df="duf"
-alias grep="rg"
-alias wget="aria2c -c"
-alias ls="eza"
-alias du="dust -b"
+#alias df="duf"
+#alias grep="rg"
+#alias wget="aria2c -c"
+#alias ls="eza"
+#alias du="dust -b"
 
 # ALIASES - Navigation
 alias ..="cd .."
 
 # ALIASES - Maintainance
-alias zinitup="zinit update --parallel"
-alias zinitself="zinit self-update"
 {%@@ if profile == "fedora" @@%}
 alias dnfup="sudo dnf upgrade"
 alias dnfcln="sudo dnf autoremove"
@@ -29,18 +27,18 @@ alias purge="sudo purge"
 alias sysup="sudo softwareupdate -i -a"
 
 # ALIASES - HomeBrew
-alias hbup="brew update && brew upgrade"
-alias hbcln="brew cleanup && brew autoremove"
-alias hbin="brew install"
-alias hbls="brew list"
-alias hbrm="brew uninstall"
-alias hbsrch="brew search"
+alias brewup="brew update && brew upgrade"
+alias brewclean="brew cleanup && brew autoremove"
+alias brewin="brew install"
+alias brewls="brew list"
+alias brewrm="brew uninstall"
+alias brewsrch="brew search"
 
 # ALIASES - HomeBrew Cask
-alias hbinc="brew install --cask"
-alias hblsc="brew list --cask"
-alias hbrmc="brew uninstall --cask"
-alias hbsrchc="brew search --cask"
+alias brewinc="brew install --cask"
+alias brewlsc="brew list --cask"
+alias brewrmc="brew uninstall --cask"
+alias brewsrchc="brew search --cask"
 
 {%@@ endif @@%}
 # ALIASES - Lazy
