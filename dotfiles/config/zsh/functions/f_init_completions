@@ -1,0 +1,25 @@
+#!/bin/zsh
+
+reload_completions () {
+  compinit -d $ZDOTDIR/.zcompdump
+  zcompile -- $ZDOTDIR/.zcompdump
+}
+
+f_init_completions() {
+	local force_update=${1:-false}
+	local ZWC_FILE="$ZDOTDIR/plugins.zwc"
+
+	autoload -Uz compinit
+
+	source ~/.nodenv/completions/nodenv.zsh
+
+	compinit -d $ZDOTDIR/.zcompdump
+  	zcompile -- $ZDOTDIR/.zcompdump
+
+	unfunction f_init_completions
+	zle menu-complete
+	bindkey ^I menu-complete
+}
+
+zle -N f_init_completions
+bindkey ^I f_init_completions

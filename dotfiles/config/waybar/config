@@ -1,9 +1,11 @@
 {
-	"output": "DP-1",
 	"position": "top",
-	"margin-top": 8,
-	"margin-left": 16,
-	"margin-right": 16,
+	"margin-top": 12,
+	"margin-left": 12,
+	"margin-right": 12,
+	"spacing": 24,
+	"fixed-center": true,
+	"mode": "dock",
 	"modules-left": [
 		"sway/workspaces",
 		"sway/mode"
@@ -29,7 +31,7 @@
 		}
 	},
 	"sway/window": {
-		"format": "{app_id}",
+		"format": "{title}",
 		"max-length": 60,
 		"tooltip": false
 	},
@@ -39,8 +41,9 @@
 		"tooltip": false
 	},
 	"clock": {
-		"format": "󰃰 {:%a. %d de %B, %R}",
+		"format": "󰃰 {:L%a. %d de %B, %R}",
 		"tooltip-format": "<tt><small>{calendar}</small></tt>",
+		"locale": "pt_BR.UTF-8",
 		"calendar": {
 			"format": {
 				"months": "<span color='#c0caf5'><b>{}</b></span>",
@@ -53,7 +56,7 @@
 	"group/group-power": {
 		"orientation": "inherit",
 		"drawer": {
-			"transition-duration": 500,
+			"transition-duration": 400,
 			"children-class": "not-power",
 			"transition-left-to-right": false
 		},
@@ -106,8 +109,8 @@
 		"max-length": 100
 	},
 	"privacy": {
-		"icon-spacing": 4,
-		"icon-size": 18,
+		"icon-spacing": 8,
+		"icon-size": 12,
 		"transition-duration": 250,
 		"format": "{icon}",
 		"modules": [

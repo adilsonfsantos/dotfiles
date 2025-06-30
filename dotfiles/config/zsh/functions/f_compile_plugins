@@ -1,0 +1,38 @@
+#!/bin/zsh
+
+f_compile_plugins() {
+	local force_update=${1:-false}
+	local ZWC_FILE="$ZDOTDIR/plugins.zwc"
+
+	# Adiciona os diretórios dos plugins ao fpath
+	fpath+=(
+		"$ZDOTDIR/plugins/fast-syntax-highlighting"
+		"$ZDOTDIR/plugins/zsh-autosuggestions"
+		"$ZDOTDIR/plugins/fzf-tab"
+		"$fpath"
+	)
+
+	# Compila os plugins em um único .zwc se necessário
+	if [[ $force_update == true || ! -f $ZWC_FILE || \
+		$ZDOTDIR/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh -nt $ZWC_FILE || \
+		$ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh -nt $ZWC_FILE \
+		$ZDOTDIR/plugins/fzf-tab/fzf-tab.plugin.zsh -nt $ZWC_FILE \
+	$ZWC_FILE ]]; then
+
+		echo "Compiling plugins into $ZWC_FILE..."
+		zcompile -z "$ZWC_FILE" \
+			"$ZDOTDIR/plugins/fzf-tab/fzf-tab.plugin.zsh" \
+			"$ZDOTDIR/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh" \
+			"$ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
+		fi
+
+			# Carrega o arquivo compilado
+		autoload -wUz "$ZWC_FILE"
+		#
+	source $ZDOTDIR/plugins/fzf-tab/fzf-tab.plugin.zsh
+
+	source $ZDOTDIR/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+	source $ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+
+}

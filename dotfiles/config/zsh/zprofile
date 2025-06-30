@@ -1,0 +1,3 @@
+{%@@ if profile == "mac" @@%}
+FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
+{%@@ endif @@%}

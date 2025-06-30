@@ -1,0 +1,14 @@
+#!/usr/bin/env zsh
+#
+# Usage: zsh-update
+#
+# Updates all plugins under ~/.zsh.
+#
+# It's recommended to restart zsh with `exec zsh` after running `zsh-update`.
+
+() {
+    local dir
+    for dir in $ZDOTDIR/plugins/*(/); do
+        git -C $dir pull
+    done
+} "$@"

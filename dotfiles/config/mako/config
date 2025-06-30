@@ -1,37 +1,28 @@
 # GLOBAL CONFIGURATION OPTIONS
 max-history=100
-sort=-time
 
 # BINDING OPTIONS
-on-button-middle=dismiss-all
-on-notify=exec mpv /usr/share/sounds/freedesktop/stereo/message.oga
-
-
+on-notify=exec pw-play /usr/share/sounds/freedesktop/stereo/message.oga
 
 font=JetBrainsMono Nerd Font 10
 margin=16
 padding=8
-border-color=#1a1b26
 layer=overlay
 
+border-color=#1a1b26
 background-color=#1a1b26
-progress-color=over #89b4fa
+progress-color=over #89b4faff
 text-color=#c0caf5
 
 [urgency=low]
-background-color=#16161e
-text-color=#c0caf5
 border-color=#c0caf5
 default-timeout=2000
 
 [urgency=normal]
-background-color=#1a1b26
-text-color=#c0caf5
 border-color=#c0caf5
 default-timeout=5000
 
 [urgency=critical]
 background-color=#292e42
-text-color=#db4b4b
 border-color=#db4b4b
 default-timeout=0

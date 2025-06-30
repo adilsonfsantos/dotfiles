@@ -1,0 +1,31 @@
+#!/bin/zsh
+
+function zcompile-many() {
+  local f
+  for f; do zcompile -R -- "$f".zwc "$f"; done
+}
+
+f_load_plugins() {
+	local force_update=${1:-false}
+	mkdir -p "$ZDOTDIR/plugins"
+	#Clona os plugins se necessário
+	[[ $force_update == true || ! -d $ZDOTDIR/plugins/fzf-tab ]] &&
+		git clone --depth=1 https://github.com/Aloxaf/fzf-tab.git $ZDOTDIR/plugins/fzf-tab &&
+		zcompile-many $ZDOTDIR/plugins/fzf-tab/fzf-tab.plugin.zsh
+
+	[[ $force_update == true || ! -d $ZDOTDIR/plugins/fast-syntax-highlighting ]] &&
+		git clone --depth=1 https://github.com/zdharma-continuum/fast-syntax-highlighting.git $ZDOTDIR/plugins/fast-syntax-highlighting &&
+		mv -- $ZDOTDIR/plugins/fast-syntax-highlighting/{'→chroma','tmp'} &&
+		zcompile-many $ZDOTDIR/plugins/fast-syntax-highlighting/{fast*,.fast*,**/*.ch,**/*.zsh}
+		mv -- $ZDOTDIR/plugins/fast-syntax-highlighting/{'tmp','→chroma'}
+
+	[[ $force_update == true || ! -d $ZDOTDIR/plugins/zsh-autosuggestions ]] &&
+		git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git $ZDOTDIR/plugins/zsh-autosuggestions &&
+		zcompile-many $ZDOTDIR/plugins/zsh-autosuggestions/{zsh-autosuggestions.zsh,src/**/*.zsh}
+
+	[[ $force_update == true || ! -d $ZDOTDIR/plugins/powerlevel10k ]] &&
+		git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZDOTDIR/plugins/powerlevel10k &&
+		make -C $ZDOTDIR/plugins/powerlevel10k pkg
+}
+
+unfunction zcompile-many

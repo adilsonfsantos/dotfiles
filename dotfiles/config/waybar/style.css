@@ -1,98 +1,84 @@
 * {
-  border: none;
-  border-radius: 0px;
-  font-family: "JetBrainsMono Nerd Font", "Material Design Icons Desktop";
-  font-size: 12px;
-}
-
-.modules-left,
-.modules-center,
-.modules-right {
-  margin-bottom: 4px;
-  margin-top: 4px;
+	border: none;
+	border-radius: 0px;
+	font-family: "JetBrainsMono Nerd Font Mono", "Material Design Icons Desktop";
+	font-size: 12px;
 }
 
 .modules-left {
-  margin-left: 4px;
+	margin-left: 12px;
+}
+
+.modules-center {
+	color: #c0caf5;
 }
 
 .modules-right {
-  margin-right: 4px;
+	margin-right: 16px;
+	color: #c0caf5;
 }
 
 #waybar {
-  background-color: #16161e;
+	background-color: #16161e;
 }
 
 #workspaces button {
-  border-radius: 8px;
-  transition: color 400ms ease-in-out;
-  border: none;
-  color: #545c7e;
-  font-size: 10px;
-  padding: 0px 4px;
+	border-radius: 8px;
+	transition: color 400ms ease-in-out;
+	border: none;
+	color: #545c7e;
+	padding: 0px 4px;
 }
 
 #workspaces button.focused {
-  color: #bb9af7;
+	color: #bb9af7;
 }
 
 #workspaces button:hover {
-  background: none;
-  box-shadow: none;
-  text-shadow: none;
+	background: none;
+	box-shadow: none;
+	text-shadow: none;
 }
 
 #workspaces button.focused:hover {
-  background: none;
+	background: none;
 }
 
 #workspaces button.urgent {
-  color: #e0af68;
-}
-
-#window {
-  color: #c0caf5;
+	color: #F22816;
 }
 
 #waybar.empty #window {
-  background-color: transparent;
-  padding: 0;
+	background-color: transparent;
+	padding: 0;
 }
 
 #mode {
-  color: #e0af68;
-  font-weight: 700;
-  padding: 0px 8px;
-}
-
-#clock,
-#wireplumber,
-#network {
-  color: #c0caf5;
-  padding: 0 8px;
+	color: #e0af68;
+	font-weight: 700;
 }
 
 #custom-power {
-  color: #f7768e;
-  font-size: 16px;
-  padding: 4px 4px;
+	color: #f7768e;
+	font-size: 24px;
+}
+
+#privacy {
+	font-size: 4px;
 }
 
 #custom-quit,
 #custom-lock,
-#custom-reboot,
-#privacy {
-  color: #c0caf5;
-  font-size: 16px;
-  padding: 4px 4px;
+#custom-reboot {
+	font-size: 20px;
+	margin: 0 8px
+}
+
+
+#custom-reboot {
+	margin-right: 14px
 }
 
 tooltip {
-  background-color: #15161e;
-}
-
-#privacy-item>* {
-  color: #c0caf5;
-  background: none;
+	background-color: #15161e;
 }

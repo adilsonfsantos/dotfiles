@@ -1,7 +1,7 @@
 {
   "caret_extra_width": 2,
   "color_scheme": "Writer Dark.sublime-color-scheme",
-  "dictionary": "Dictionaries/pt_BR.dic",
+  "dictionary": "Packages/Language/Portuguese (Brazilian).dic",
   "draw_centered": true,
   "draw_indent_guides": false,
   "draw_white_space": ["none"],
@@ -16,7 +16,6 @@
   "scroll_past_end": 0.5,
   "tab_size": 4,
   "theme": "Adaptive.sublime-theme",
-  "translate_tabs_to_spaces": true,
   "word_wrap": true,
   "wrap_width": 72,
   "auto_complete": false,

@@ -1,75 +1,66 @@
 # Autostart
-  exec mako
-  exec wl-paste -p --watch clipman --no-persist
-  exec /usr/lib/polkit-1/polkit-agent-helper-1 &
-  exec /usr/libexec/polkit-gnome-authentication-agent-1
+exec mako
+exec clipman restore
+exec wl-paste -p -t text --watch clipman store -P --no-persist
+exec --no-startup-id /usr/bin/lxpolkit
+exec systemctl --user import-environment WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP SWAYSOCK I3SOCK XCURSOR_SIZE XCURSOR_THEME
+exec dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP SWAYSOCK I3SOCK XCURSOR_SIZE XCURSOR_THEME
 
-  exec_always {
-    gsettings set org.gnome.desktop.interface {
-        color-scheme 'prefer-dark'
-        font-name 'Inter 11'
-        document-font-name 'Inter 11'
-        monospace-font-name 'JetBrainsMono Nerd Font 11'
-  }
+exec_always {
+	gsettings set org.gnome.desktop.interface {
+		color-scheme 'prefer-dark'
+    	font-name 'Inter 12'
+    	document-font-name 'Inter 12'
+    	monospace-font-name 'JetBrainsMono Nerd Font Mono 12'
+  	}
 }
+
 # Variables
-  ## Keys
-    set {
-        $mod    mod4
-        $mod2   mod4+Shift
-        $left   h
-        $down   j
-        $up     k
-        $right  l
-    }
+set {
+	$mod    mod4
+	$mod2   mod4+Shift
+	$left   h
+	$down   j
+	$up     k
+	$right  l
+	$term kitty
+	$menu fuzzel
+	$resize_factor  8px
+}
 
-  ##  Programs
-    set {
-      $term kitty
-      # $menu wofi | xargs swaymsg exec --
-      $menu fuzzel
-    }
+# Output
+focus output DP-1
 
-  ##  Miscellaneous
-    set {
-        $resize_factor  8px
-    }
+output * bg $HOME/Imagens/09.jpg fill
 
-# Output configuration
-  focus output DP-1
-
-  output * bg ~/Imagens/BLACK_III_desktop-1.jpg fill
-
-  output DP-1 {
-    resolution 1920x1080@74.986Hz
-    adaptive_sync on
-    pos 1360 0
-  }
-
-  output HDMI-A-1 {
-    resolution 1360x768@60.015Hz
+output DP-1 {
+	resolution 1920x1080@74.986Hz
     adaptive_sync on
     pos 0 0
-  }
+}
 
-# Input configuration
-  input "type:keyboard" {
+output HDMI-A-2 {
+    resolution 1360x768@60.015Hz
+    pos -1360 100
+}
+
+# Input
+input "type:keyboard" {
     xkb_layout "br"
     xkb_variant "abnt2"
     xkb_model "pc101"
-  }
+}
 
-  input "type:pointer" {
+input "type:pointer" {
     natural_scroll "enable"
-  }
+}
 
-# Behavior
-  focus_follows_mouse 	no
-  seat * hide_cursor 10000
+# Mouse Behavior
+focus_follows_mouse 	no
+seat * hide_cursor 10000
 
-# Key bindings
-  ## Basics:
-  bindsym {
+# Key Bindings
+bindsym {
     ### Start Terminal
     $mod+t exec $term
     ### Kill focused windows
@@ -78,220 +69,210 @@
     $mod+space exec $menu
     ### Dismiss notifications
     $mod+d exec makoctl dismiss
-  }
+}
 
-  ## Workspaces:
-    ### Switch to workspace
-      bindsym {
-        $mod+1 workspace number 1
-        $mod+2 workspace number 2
-        $mod+3 workspace number 3
-        $mod+4 workspace number 4
-        $mod+5 workspace number 5
-        $mod+6 workspace number 6
-        $mod+7 workspace number 7
-        $mod+8 workspace number 8
-        $mod+9 workspace number 9
-        $mod+0 workspace number 10
-      }
-    ### Move focused container to workspace
-      bindsym {
-        $mod2+1 move container to workspace number 1
-        $mod2+2 move container to workspace number 2
-        $mod2+3 move container to workspace number 3
-        $mod2+4 move container to workspace number 4
-        $mod2+5 move container to workspace number 5
-        $mod2+6 move container to workspace number 6
-        $mod2+7 move container to workspace number 7
-        $mod2+8 move container to workspace number 8
-        $mod2+9 move container to workspace number 9
-        $mod2+0 move container to workspace number 10
-      }
+## Workspaces:
+bindsym {
+### Switch to workspace
+	$mod+1 workspace number 1
+	$mod+2 workspace number 2
+	$mod+3 workspace number 3
+	$mod+4 workspace number 4
+	$mod+5 workspace number 5
+	$mod+6 workspace number 6
+	$mod+7 workspace number 7
+	$mod+8 workspace number 8
+	$mod+9 workspace number 9
+	$mod+0 workspace number 10
+### Move focused container to workspace
+	$mod2+1 move container to workspace number 1
+	$mod2+2 move container to workspace number 2
+	$mod2+3 move container to workspace number 3
+	$mod2+4 move container to workspace number 4
+	$mod2+5 move container to workspace number 5
+	$mod2+6 move container to workspace number 6
+	$mod2+7 move container to workspace number 7
+	$mod2+8 move container to workspace number 8
+	$mod2+9 move container to workspace number 9
+	$mod2+0 move container to workspace number 10
+}
 
-  ## Layout:
-    bindsym {
-      ### Make the current focus fullscreen
-      $mod+f fullscreen
+## Layout:
+bindsym {
+	### Make the current focus fullscreen
+	$mod+f fullscreen
+	### Toggle the current focus between tiling and floating mode
+	$mod+s floating toggle
+	### Swap focus between the tiling area and the floating area
+	$mod2+s focus mode_toggle
+	### Move focus to the parent container
+	$mod+a focus parent
+	### Move focus to the child container
+	$mod2+a focus child
+}
 
-      ### Toggle the current focus between tiling and floating mode
-      $mod+s floating toggle
+mode "resize" {
+	### left will shrink the containers width
+	### right will grow the containers width
+	### up will shrink the containers height
+	### down will grow the containers height
+	bindsym {
+		$left resize shrink width $resize_factor
+		$down resize grow height $resize_factor
+		$up rerrsize shrink height $resize_factor
+		$right resize grow width $resize_factor
+		$mod+r mode default
+		# Return to default mode
+		Return mode "default"
+		Escape mode "default"
+	}
+}
+bindsym $mod+r mode "resize"
 
-      ### Swap focus between the tiling area and the floating area
-      $mod2+s focus mode_toggle
-
-      ### Move focus to the parent container
-      $mod+a focus parent
-
-      ### Move focus to the child container
-      $mod2+a focus child
-    }
-
-  mode "resize" {
-      ### left will shrink the containers width
-      ### right will grow the containers width
-      ### up will shrink the containers height
-      ### down will grow the containers height
-      bindsym $left resize shrink width $resize_factor
-      bindsym $down resize grow height $resize_factor
-      bindsym $up resize shrink height $resize_factor
-      bindsym $right resize grow width $resize_factor
-
-      # Return to default mode
-      bindsym Return mode "default"
-      bindsym Escape mode "default"
-  }
-  bindsym $mod+r mode "resize"
-
-  # A special mode for passing any keybindings to the focused application
-
-  mode "passthrough" {
-    bindsym $mod+Pause mode default
-  }
-  
-  bindsym $mod+Pause mode "passthrough"
+# A special mode for passing any keybindings to the focused application
+mode "passthrough" {
+	bindsym $mod+Pause mode default
+	Return mode "default"
+	Escape mode "default"
+}
+bindsym $mod+Pause mode "passthrough"
 
 
-  ## Drag floating windows by holding down $mod and left mouse button.
-  ## Resize them with right mouse button + $mod.
-  ## Despite the name, also works for non-floating windows.
-  ## Change normal to inverse to use left mouse button for resizing and right
-  ## mouse button for dragging.
-  floating_modifier $mod normal
+## Drag floating windows by holding down $mod and left mouse button.
+## Resize them with right mouse button + $mod.
+## Despite the name, also works for non-floating windows.
+## Change normal to inverse to use left mouse button for resizing and right
+## mouse button for dragging.
+floating_modifier $mod normal
 
-  ## Reload the configuration file
-  bindsym $mod2+z reload
+## Reload the configuration file
+bindsym $mod2+z reload
 
-  ## Move your focus around
-  ## Or use $mod+[up|down|left|right]
-  bindsym {
-    $mod+$left focus left
-    $mod+$down focus down
-    $mod+$up focus up
-    $mod+$right focus right
-  }
+## Move your focus around
+## Or use $mod+[up|down|left|right]
+bindsym {
+	$mod+$left focus left
+	$mod+$down focus down
+	$mod+$up focus up
+	$mod+$right focus right
+}
 
-  ## Move the focused window with the same
-  bindsym {
-    $mod2+$left move left
-    $mod2+$down move down
-    $mod2+$up move up
-    $mod2+$right move right
-  }
+## Move the focused window with the same
+bindsym {
+	$mod2+$left move left
+	$mod2+$down move down
+	$mod2+$up move up
+	$mod2+$right move right
+}
 
 # Media keys
-  bindsym {
-    XF86AudioRaiseVolume exec wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 1%+
-    XF86AudioLowerVolume exec wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 1%-
-    XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
-    XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
-    XF86AudioPlay exec playerctl play-pause
-    XF86AudioNext exec playerctl next
-    XF86AudioPrev exec playerctl previous
-  }
+bindsym {
+	XF86AudioRaiseVolume exec wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 1%+ -l 1
+	XF86AudioLowerVolume exec wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 1%- -l 1
+	XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+	XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+	XF86AudioPlay exec playerctl play-pause
+	XF86AudioPause exec playerctl play-pause
+	XF86AudioNext exec playerctl next
+	XF86AudioPrev exec playerctl previous
+	XF86AudioStop exec playerctl stop
+}
 
 # clipman history
-  bindsym $mod2+v exec clipman pick -t wofi
+bindsym $mod2+v exec clipman pick --tool=CUSTOM --tool-args="fuzzel -d"
 
-# Screenshot 
-  bindsym {
-    ## Screenshot focused screen
-    Print exec grim -o $(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name') \
-      && notify-send -u low "Captura de tela salva"
+# Screenshot
+bindsym {
+	## Screenshot focused screeng
+	Print exec grim -o $(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name') \
+		&& notify-send -u low "Captura de tela salva"
 
-    ## Screenshot focused window
-    $mod+Print exec swaymsg -t get_tree | jq -j \
-      '.. | select(.type?) | select(.focused).rect | "\(.x),\(.y) \(.width)x\(.height)"' \
-      | grim -g - && notify-send -u low "Captura de tela salva"
-    ##https://www.reddit.com/r/swaywm/comments/kihm15/comment/ggqxl5q/
+	## Screenshot focused window
+	##https://www.reddit.com/r/swaywm/comments/kihm15/comment/ggqxl5q/
+	$mod+Print exec swaymsg -t get_tree | jq -j \
+		'.. | select(.type?) | select(.focused).rect | "\(.x),\(.y) \(.width)x\(.height)"' \
+		| grim -g - && notify-send -u low "Captura de tela salva"
 
-    ## Screenshot region
-    $mod2+Print exec grim -g "$(slurp)" && notify-send -u low "Captura de tela salva"
-  }
+	## Screenshot region
+	$mod2+Print exec grim -g "$(slurp)" && notify-send -u low "Captura de tela salva"
+}
 
 # Workspaces
-  assign [app_id="firefox"]       workspace number 1
-  assign [app_id="foot"]          workspace number 2
-  assign [app_id="kitty"]         workspace number 2
-  assign [app_id="sublime_text"]  workspace number 3
-  assign [app_id="sublime_merge"] workspace number 5
-  workspace 1 output DP-1
-  workspace 2 output DP-1
-  workspace 3 output DP-1
-  workspace 4 output DP-1
-  workspace 5 output DP-1 
-  workspace 9 output HDMI-A-1
-  workspace 10 output HDMI-A-1
+exec swaymsg "workspace 2; exec $term"
+exec swaymsg "workspace 10; exec $term"
+assign [app_id="firefox"] workspace number 1
+assign [app_id="sublime_text"] workspace number 3
+assign [app_id="sublime_merge"] workspace number 4
+workspace 1 output DP-1
+workspace 2 output DP-1
+workspace 3 output DP-1
+workspace 4 output DP-1
+workspace 5 output DP-1
+workspace 9 output HDMI-A-1
+workspace 10 output HDMI-A-1
 
 # Status Bar
-  bar swaybar_command waybar
+bar swaybar_command waybar
 
 # Styling
-  font pango: Inter-Light 11
+font pango: JetBrainsMono Nerd Font Mono 11
 
-  ## Window decoration
-    ### class               border  backgr. text    indicator child_border
-    client.focused          #bb9af7 #1a1b26 #a9b1d6 #e0af68 #bb9af7
-    client.focused_inactive #bb9af7 #1a1b26 #a9b1d6 #e0af68 #bb9af7
-    client.unfocused        #545c7e #292e42 #545c7e #e0af68 #545c7e
-    client.urgent           #ff9e64 #ff9364 #1a1b26 #e0af68 #ff9e64
+## Window decoration
+### class                 border    backgr.   text      indicator child_border
+client.focused          #292e42 #1a1b26 #a9b1d6 #bb9af7 #bb9af7
+client.focused_inactive #292e42 #1a1b26 #a9b1d6 #bb9af7 #bb9af7
+client.unfocused        #545c7e #292e42 #545c7e #bb9af7 #545c7e
+client.urgent           #ff9e64 #ff9364 #1a1b26 #bb9af7 #ff9e64
 
-    default_border pixel 2
-    default_floating_border pixel 2
-    smart_borders on
-    gaps outer 0
-    gaps inner 16
+default_border pixel 2
+default_floating_border pixel 2
+smart_borders on
+gaps outer 4
+gaps inner 8
 
 include /etc/sway/config.d/*
 
 # Window behaviour
-  ## Always float certain windows
-  for_window {
-    [title="(?:Open|Save) (?:File|Folder|As)"]      floating enable
-    [app_id="mpv"]                                  floating enable, resize 960 540
-    [title="^Picture-in-Picture$"]                  floating enable, sticky enable
-    [title="^Picture-in-Picture$"]                  resize 800 450
-    [app_id="(?:askpass)"]                          floating enable
-  }
+## Always float certain windows
+for_window {
+	[title="(?:Open|Save) (?:File|Folder|As)"]      floating enable
+	[app_id="mpv"]                                  floating enable, resize 960 540
+	[title="^Picture-in-Picture$"]                  floating enable, sticky enable
+	[title="^Picture-in-Picture$"]                  resize 800 450
+	[app_id="(?:askpass)"]                          floating enable
+}
 
-  # apply mark for Xwayland and wayland native browser windows
-  for_window [class="Chromium-browser"] mark Browser
-  for_window [class="Brave-browser"] mark Browser
-  for_window [class="firefox"]  mark Browser
-  for_window [app_id="Chromium-browser"] mark Browser
-  for_window [app_id="brave-browser"] mark Browser
-  for_window [app_id="firefox"] mark Browser
+# apply mark for Xwayland and wayland native browser windows
+for_window [app_id="Chromium-browser"] mark Browser
+for_window [app_id="brave-browser"] mark Browser
+for_window [app_id="^firefox"] mark Browser
 
-  # inhibit scrensaver for fullscreen browser windows
-  for_window [con_mark="Browser"] {
-    inhibit_idle fullscreen
-  }
+# inhibit scrensaver for fullscreen browser windows
+for_window [con_mark="Browser"] {
+	inhibit_idle fullscreen
+}
 
-  # firefox wayland screensharing indicator
-  for_window [app_id="firefox" title="Firefox — Sharing Indicator"] {
-    floating enable
-  }
-  # Display PulseAudio volume control application (both GTK and Qt varieties)
-  # as a floating window.
+# firefox wayland screensharing indicator
+for_window [app_id="^firefox" title="Firefox — Sharing Indicator"] {
+	floating enable
+}
+# Display PulseAudio volume control application (both GTK and Qt varieties)
+# as a floating window.
 
-  for_window [app_id="pavucontrol"] {
-    floating enable
-    move position center
-  }
+for_window [app_id="org.pulseaudio.pavucontrol"] {
+	floating enable
+	move position center
+}
 
-  for_window [app_id="pavucontrol-qt"] {
-    floating enable
-    move position center
-  }
+for_window [app_id="lxqt-policykit-agent"] {
+	floating enable
+	move position center
+}
 
-  for_window [app_id="lxqt-policykit-agent"] {
-    floating enable
-    move position center
-  }
-
-  for_window [app_id="polkit-gnome-authentication-agent-1"] {
-    floating enable
-    move position center
-  }
+for_window [app_id="polkit-gnome-authentication-agent-1"] {
+	floating enable
+	move position center
+}
 
 # Idle and lock configuration
 #
@@ -317,9 +298,9 @@ exec LT="$lock_timeout" ST="$screen_timeout" LT=${LT:-1800} ST=${ST:-300} && \
     swayidle -w \
         timeout $LT 'swaylock -f' \
         timeout $((LT + ST)) 'swaymsg "output * power off"' \
-                      resume 'swaymsg "output * power on"'  \
+        resume 'swaymsg "output * power on"'  \
         timeout $ST 'pgrep -xu "$USER" swaylock >/dev/null && swaymsg "output * power off"' \
-             resume 'pgrep -xu "$USER" swaylock >/dev/null && swaymsg "output * power on"'  \
+        resume 'pgrep -xu "$USER" swaylock >/dev/null && swaymsg "output * power on"'  \
         before-sleep 'swaylock -f' \
         lock 'swaylock -f' \
         unlock 'pkill -xu "$USER" -SIGUSR1 swaylock'

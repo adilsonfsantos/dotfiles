@@ -1,0 +1,31 @@
+#!/bin/zsh
+
+# load nodenv
+eval "$(nodenv init - --no-rehash)"
+source $HOME/.nodenv/completions/nodenv.zsh
+
+{%@@ if profile == "fedora" @@%}
+# load fzf completions and bindings
+source <(fzf --zsh)
+{%@@ elif profile == "mac" @@%}
+# Use fzf installed from Homebrew
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+{%@@ endif @@%}
+
+# load powerlevel10k
+source $ZDOTDIR/plugins/powerlevel10k/powerlevel10k.zsh-theme
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
+
+# #Enable the "new" completion system (compsys).
+autoload -Uz compinit && compinit
+[[ $ZDOTDIR/.zcompdump.zwc -nt $ZDOTDIR/.zcompdump ]] || zcompile $ZDOTDIR/.zcompdump
+
+# load fzf-tab
+source $ZDOTDIR/plugins/fzf-tab/fzf-tab.plugin.zsh
+source $ZDOTDIR/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+source $ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+

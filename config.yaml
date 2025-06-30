@@ -1,6 +1,7 @@
 config:
   backup: true
   create: true
+  longkey: true
   dotpath: dotfiles
   cmpignore:
   - '*.log'
@@ -12,22 +13,69 @@ config:
   - '*.log'
 
 dotfiles:
-  f_zshrc:
-    src: zshrc
-    dst: ~/.zshrc
   f_zshenv:
     src: zshenv
     dst: ~/.zshenv
   f_brewfile:
     src: Brewfile
     dst: ~/Brewfile
-  f_zprofile:
-    src: zprofile
-    dst: ~/.zprofile
   f_p10k.zsh:
     src: p10k.zsh
     dst: ~/.p10k.zsh
-  d_btop:
+  f_com.googlecode.iterm2.plist:
+    src: com.googlecode.iterm2.plist
+    dst: ~/com.googlecode.iterm2.plist
+  f_ignore:
+    src: ignore
+    dst: ~/.ignore
+  f_imagens_background:
+    src: Imagens/09.jpg
+    dst: ~/Imagens/09.jpg
+    chmod: '777'
+  f_config_sublime-text_default.profile:
+    src: config/sublime-text/Packages/sublime-profiles/Data/Default.profile
+    dst: ~/.config/sublime-text/Packages/sublime-profiles/Data/Default.profile
+  f_config_sublime-text_writer.profile:
+    src: config/sublime-text/Packages/sublime-profiles/Data/Writer.profile
+    dst: ~/.config/sublime-text/Packages/sublime-profiles/Data/Writer.profile
+  f_library_sublime-text_tokyonight_night.tmtheme:
+    src: Library/Application Support/Sublime Text
+      3/Packages/tokyonight_night.tmTheme
+    dst: ~/Library/Application Support/Sublime Text
+      3/Packages/tokyonight_night.tmTheme
+  f_library_sublime-text_default.profile:
+    src: Library/Application Support/Sublime Text
+      3/Packages/sublime-profiles/Data/Default.profile
+    dst: ~/Library/Application Support/Sublime Text
+      3/Packages/sublime-profiles/Data/Default.profile
+  f_library_sublime-text_writer.profile:
+    src: Library/Application Support/Sublime Text
+      3/Packages/sublime-profiles/Data/Writer.profile
+    dst: ~/Library/Application Support/Sublime Text
+      3/Packages/sublime-profiles/Data/Writer.profile
+  d_config_zsh:
+    src: config/zsh
+    dst: ~/.config/.zsh/
+    ignoreempty: true
+    cmpignore:
+    - '*/plugins'
+    - .zcompdump
+    - .zsh_history
+    - '*.zwc'
+    - '*/completions/*'
+    upignore:
+    - '*/plugins'
+    - .zcompdump
+    - .zsh_history
+    - '*.zwc'
+    - '*/completions/*'
+    instignore:
+    - '*/plugins'
+    - .zcompdump
+    - .zsh_history
+    - '*.zwc'
+    - '*/completions/*'
+  d_config_btop:
     src: config/btop
     dst: ~/.config/btop/
     cmpignore:
@@ -36,105 +84,56 @@ dotfiles:
     - '*/themes'
     instignore:
     - '*/themes'
-  d_foot:
+  d_config_foot:
     src: config/foot
     dst: ~/.config/foot/
-  d_mako:
+  d_config_mako:
     src: config/mako
     dst: ~/.config/mako
-  d_neofetch:
-    src: config/neofetch
-    dst: ~/.config/neofetch/
-  d_ranger:
-    src: config/ranger
-    dst: ~/.config/ranger/
-    chmod: '755'
-  d_sway:
+  d_config_sway:
     src: config/sway
     dst: ~/.config/sway/
-  d_waybar:
+  d_config_waybar:
     src: config/waybar
     dst: ~/.config/waybar/
-  d_wofi:
-    src: config/wofi
-    dst: ~/.config/wofi/
-  f_zsh_aliases:
-    src: zsh_aliases
-    dst: ~/.zsh_aliases
-  d_nvim_plugins:
-    src: config/nvim/lua/custom/plugins
-    dst: ~/.config/nvim/lua/custom/plugins
-  d_nvim_after:
-    src: config/nvim/after
-    dst: ~/.config/nvim/after
-  f_com.googlecode.iterm2.plist:
-    src: com.googlecode.iterm2.plist
-    dst: ~/com.googlecode.iterm2.plist
-  f_ignore:
-    src: ignore
-    dst: ~/.ignore
-  f_warm-tones-wallpaper.jpg:
-    src: Imagens/warm-tones-wallpaper.jpg
-    dst: ~/Imagens/warm-tones-wallpaper.jpg
-    chmod: '777'
-  f_default.profile:
-    src: config/sublime-text/Packages/sublime-profiles/Data/Default.profile
-    dst: ~/.config/sublime-text/Packages/sublime-profiles/Data/Default.profile
-  f_writer.profile:
-    src: config/sublime-text/Packages/sublime-profiles/Data/Writer.profile
-    dst: ~/.config/sublime-text/Packages/sublime-profiles/Data/Writer.profile
   d_mpv:
     src: config/mpv
     dst: ~/.config/mpv
   d_yt-dlp:
     src: config/yt-dlp
     dst: ~/.config/yt-dlp
-  f_tokyonight_night.tmtheme:
-    src: Library/Application Support/Sublime Text 3/Packages/tokyonight_night.tmTheme
-    dst: ~/Library/Application Support/Sublime Text 3/Packages/tokyonight_night.tmTheme
-  f_data_default.profile:
-    src: Library/Application Support/Sublime Text 3/Packages/sublime-profiles/Data/Default.profile
-    dst: ~/Library/Application Support/Sublime Text 3/Packages/sublime-profiles/Data/Default.profile
-  f_data_writer.profile:
-    src: Library/Application Support/Sublime Text 3/Packages/sublime-profiles/Data/Writer.profile
-    dst: ~/Library/Application Support/Sublime Text 3/Packages/sublime-profiles/Data/Writer.profile
-  f_nvim_lazy-lock.json:
-    src: config/nvim/lazy-lock.json
-    dst: ~/.config/nvim/lazy-lock.json
+  d_config_fastfetch:
+    src: config/fastfetch
+    dst: ~/.config/fastfetch
+    chmod: '744'
 profiles:
   base:
     dotfiles:
-      - f_nvim_lazy-lock.json
-      - d_nvim_plugins
-      - d_nvim_after
-      - f_zshrc
-      - f_zsh_aliases
-      - f_p10k.zsh
-      - d_btop
-      - f_ignore
+    - f_zshenv
+    - f_p10k.zsh
+    - f_ignore
+    - f_imagens_background
+    - d_config_zsh
+    - d_config_btop
+    - d_config_fastfetch
   fedora:
     dotfiles:
-      - d_foot
-      - d_mako
-      - d_neofetch
-      - d_ranger
-      - d_sway
-      - d_waybar
-      - d_wofi
-      - f_warm-tones-wallpaper.jpg
-      - d_mpv
-      - d_yt-dlp
-      - f_default.profile
-      - f_writer.profile
+    - f_config_sublime-text_default.profile
+    - f_config_sublime-text_writer.profile
+    - d_config_foot
+    - d_config_mako
+    - d_config_sway
+    - d_config_waybar
+    - d_mpv
+    - d_yt-dlp
     include:
-      - base
+    - base
   mac:
     dotfiles:
-      - f_brewfile
-      - f_zprofile
-      - f_com.googlecode.iterm2.plist
-      - f_tokyonight_night.tmtheme
-      - f_data_default.profile
-      - f_data_writer.profile
+    - f_brewfile
+    - f_com.googlecode.iterm2.plist
+    - f_library_sublime-text_tokyonight_night.tmtheme
+    - f_library_sublime-text_default.profile
+    - f_library_sublime-text_writer.profile
     include:
-      - base
+    - base
