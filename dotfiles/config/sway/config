@@ -131,9 +131,11 @@ bindsym $mod+r mode "resize"
 
 # A special mode for passing any keybindings to the focused application
 mode "passthrough" {
-	bindsym $mod+Pause mode default
-	Return mode "default"
-	Escape mode "default"
+	bindsym {
+		$mod+Pause mode default
+		Return mode "default"
+		Escape mode "default"
+	}
 }
 bindsym $mod+Pause mode "passthrough"
 
@@ -198,8 +200,6 @@ bindsym {
 }
 
 # Workspaces
-exec swaymsg "workspace 2; exec $term"
-exec swaymsg "workspace 10; exec $term"
 assign [app_id="firefox"] workspace number 1
 assign [app_id="sublime_text"] workspace number 3
 assign [app_id="sublime_merge"] workspace number 4
@@ -210,6 +210,8 @@ workspace 4 output DP-1
 workspace 5 output DP-1
 workspace 9 output HDMI-A-1
 workspace 10 output HDMI-A-1
+exec swaymsg "workspace 2; exec $term; exec sleep 1"
+exec swaymsg "workspace 10; exec $term"
 
 # Status Bar
 bar swaybar_command waybar

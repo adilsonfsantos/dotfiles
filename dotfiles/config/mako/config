@@ -2,7 +2,7 @@
 max-history=100
 
 # BINDING OPTIONS
-on-notify=exec pw-play /usr/share/sounds/freedesktop/stereo/message.oga
+on-notify=exec pw-play -V 0.3 /usr/share/sounds/freedesktop/stereo/message.oga
 
 font=JetBrainsMono Nerd Font 10
 margin=16

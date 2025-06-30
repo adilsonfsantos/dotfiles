@@ -6,8 +6,10 @@ function zcompile-many() {
 }
 
 f_load_plugins() {
-	local force_update=${1:-false}
+	if [[ ! -a $ZDOTDIR/plugins ]] then
 	mkdir -p "$ZDOTDIR/plugins"
+	fi
+	local force_update=${1:-false}
 	#Clona os plugins se necessário
 	[[ $force_update == true || ! -d $ZDOTDIR/plugins/fzf-tab ]] &&
 		git clone --depth=1 https://github.com/Aloxaf/fzf-tab.git $ZDOTDIR/plugins/fzf-tab &&

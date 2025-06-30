@@ -1,16 +1,13 @@
 #!/bin/zsh
 
+# load fzf completions and bindings
+source <(fzf --zsh)
+
+{%@@ if profile == "fedora" @@%}
 # load nodenv
 eval "$(nodenv init - --no-rehash)"
 source $HOME/.nodenv/completions/nodenv.zsh
-
-{%@@ if profile == "fedora" @@%}
-# load fzf completions and bindings
-source <(fzf --zsh)
 {%@@ elif profile == "mac" @@%}
-# Use fzf installed from Homebrew
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 {%@@ endif @@%}
 
