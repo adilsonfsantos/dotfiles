@@ -11,7 +11,7 @@ typeset -gU cdpath fpath path
 
 # GENERAL settings
 {%@@ if profile == "fedora" @@%}
-path=(
+path+=(
 	"$HOME/.nodenv/bin"
 	"$HOME/.rbenv/bin"
 	"$HOME/bin"
@@ -19,10 +19,29 @@ path=(
 	"$path[@]"
 )
 {%@@ elif profile == "mac" @@%}
-path=(
-  "$HOME/.nodenv/shims"
+path+=(
+  /opt/homebrew/bin
+  /opt/homebrew/sbin
+  /usr/local/bin
+  /usr/bin
+  /bin
+  /usr/sbin
+  /sbin
+  $HOME/.local/bin
+  $HOME/.nodenv/shims
   "$path[@]"
 )
+fpath+=(
+  /usr/share/zsh/site-functions
+  /opt/homebrew/share/zsh/site-functions
+  /usr/local/share/zsh/site-functions
+  /usr/share/zsh/"${ZSH_VERSION}"/functions
+)
+export HOMEBREW_PREFIX="/usr/local";
+export HOMEBREW_CELLAR="/usr/local/Cellar";
+export HOMEBREW_REPOSITORY="/usr/local/Homebrew";
+[ -z "${MANPATH-}" ] || export MANPATH=":${MANPATH#:}";
+export INFOPATH="/usr/local/share/info:${INFOPATH:-}";
 {%@@ endif @@%}
 export EDITOR=nvim
 export VISUAL=nvim
@@ -92,7 +111,6 @@ setopt SHARE_HISTORY
 # Carrega as funções
 fpath+=(
 	"$ZDOTDIR/functions"
-	"$ZDOTDIR/completions"
 	"${fpath[@]}"
 	)
 
