@@ -1,38 +1,5 @@
 #!/bin/zsh
 
-{%@@ if profile == "fedora" @@%}
-{%@@ elif profile == "mac" @@%}
-# load fzf completions and bindings
-source /usr/local/Cellar/fzf/*/shell/key-bindings.zsh
-source /usr/local/Cellar/fzf/*/shell/completion.zsh
-
-NODENV_SHELL=zsh
-source /usr/local/Cellar/nodenv/*/libexec/../completions/nodenv.zsh
-command nodenv rehash 2>/dev/null
-nodenv() {
-  local command
-  command="${1:-}"
-  if [ "$#" -gt 0 ]; then
-    shift
-  fi
-
-  case "$command" in
-  rehash|shell|update)
-    eval "$(nodenv "sh-$command" "$@")";;
-  *)
-    command nodenv "$command" "$@";;
-  esac
-}
-
-[[ -f $ZDOTDIR/.iterm2_shell_integration.zsh ]] && source $ZDOTDIR/.iterm2_shell_integration.zsh
-{%@@ endif @@%}
-
-
-
-# #Enable the "new" completion system (compsys).
-autoload -Uz compinit && compinit
-[[ $ZDOTDIR/.zcompdump.zwc -nt $ZDOTDIR/.zcompdump ]] || zcompile $ZDOTDIR/.zcompdump
-
 # load fzf-tab
 source $ZDOTDIR/plugins/fzf-tab/fzf-tab.plugin.zsh
 source $ZDOTDIR/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh

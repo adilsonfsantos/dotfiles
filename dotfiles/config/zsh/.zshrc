@@ -12,24 +12,25 @@ typeset -gU cdpath fpath path
 # GENERAL settings
 {%@@ if profile == "fedora" @@%}
 path+=(
-	"$HOME/.nodenv/bin"
-	"$HOME/.rbenv/bin"
-	"$HOME/bin"
-	"$HOME/.deno/bin"
-	"$path[@]"
+	$HOME/.nodenv/bin
+	$HOME/.rbenv/bin
+	$HOME/bin
+	$HOME/.deno/bin
+	$HOME/.nodenv/shims:${PATH}
+	$path[@]
 )
 {%@@ elif profile == "mac" @@%}
 path+=(
-  /opt/homebrew/bin
-  /opt/homebrew/sbin
-  /usr/local/bin
-  /usr/bin
-  /bin
-  /usr/sbin
-  /sbin
-  $HOME/.local/bin
-  $HOME/.nodenv/shims
-  "$path[@]"
+	/opt/homebrew/bin
+	/opt/homebrew/sbin
+	/usr/local/bin
+	/usr/bin
+	/bin
+	/usr/sbin
+	/sbin
+	$HOME/.local/bin
+	$HOME/.nodenv/shims
+	$path[@]
 )
 fpath+=(
   /usr/share/zsh/site-functions
@@ -50,27 +51,27 @@ export LANG=pt_BR.UTF-8
 # FZF Settings
 export FZF_DEFAULT_COMMAND="fd --type f --strip-cwd-prefix --hidden"
 export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS \
-  --highlight-line \
-  --info=inline-right \
-  --ansi \
-  --layout=reverse \
-  --border=none \
-  --color=bg+:#283457 \
-  --color=bg:#16161e \
-  --color=border:#27a1b9 \
-  --color=fg:#c0caf5 \
-  --color=gutter:#16161e \
-  --color=header:#ff9e64 \
-  --color=hl+:#2ac3de \
-  --color=hl:#2ac3de \
-  --color=info:#545c7e \
-  --color=marker:#ff007c \
-  --color=pointer:#ff007c \
-  --color=prompt:#2ac3de \
-  --color=query:#c0caf5:regular \
-  --color=scrollbar:#27a1b9 \
-  --color=separator:#ff9e64 \
-  --color=spinner:#ff007c \
+	--highlight-line \
+	--info=inline-right \
+	--ansi \
+	--layout=reverse \
+	--border=none \
+	--color=bg+:#283457 \
+	--color=bg:#16161e \
+	--color=border:#27a1b9 \
+	--color=fg:#c0caf5 \
+	--color=gutter:#16161e \
+	--color=header:#ff9e64 \
+	--color=hl+:#2ac3de \
+	--color=hl:#2ac3de \
+	--color=info:#545c7e \
+	--color=marker:#ff007c \
+	--color=pointer:#ff007c \
+	--color=prompt:#2ac3de \
+	--color=query:#c0caf5:regular \
+	--color=scrollbar:#27a1b9 \
+	--color=separator:#ff9e64 \
+	--color=spinner:#ff007c \
 "
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND="fd --strip-cwd-prefix --hidden --type d"
@@ -121,6 +122,7 @@ autoload -wUz "$ZDOTDIR/.functions.zwc"
 
 f_load_plugins
 
+[[ -f $ZDOTDIR/config/.zsh_completions ]] && source $ZDOTDIR/config/.zsh_completions
 [[ -f $ZDOTDIR/config/.zsh_plugins ]] && source $ZDOTDIR/config/.zsh_plugins
 
 # source $ZDOTDIR/functions/f_init_completions

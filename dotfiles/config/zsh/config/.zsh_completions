@@ -1,0 +1,42 @@
+#!/bin/zsh
+
+{%@@ if profile == "fedora" @@%}
+# load completions from folder
+fpath+=(
+	"$ZDOTDIR/completions"
+	"${fpath[@]}"
+	)
+
+# Load nodenv completions
+source $HOME/.nodenv/libexec/../completions/nodenv.zsh
+
+{%@@ elif profile == "mac" @@%}
+source /usr/local/Cellar/fzf/*/shell/key-bindings.zsh
+source /usr/local/Cellar/fzf/*/shell/completion.zsh
+
+source /usr/local/Cellar/nodenv/*/libexec/../completions/nodenv.zsh
+
+[[ -f $ZDOTDIR/.iterm2_shell_integration.zsh ]] && source $ZDOTDIR/.iterm2_shell_integration.zsh
+{%@@ endif @@%}
+
+# Nodenv rehash commands
+NODENV_SHELL=zsh
+command nodenv rehash 2>/dev/null
+nodenv() {
+	local command
+	command="${1:-}"
+	if [ "$#" -gt 0 ]; then
+		shift
+	fi
+
+	case "$command" in
+	rehash|shell|update)
+		eval "$(nodenv "sh-$command" "$@")";;
+	*)
+	command nodenv "$command" "$@";;
+	esac
+}
+
+# #Enable the "new" completion system (compsys).
+autoload -Uz compinit && compinit
+[[ $ZDOTDIR/.zcompdump.zwc -nt $ZDOTDIR/.zcompdump ]] || zcompile $ZDOTDIR/.zcompdump
