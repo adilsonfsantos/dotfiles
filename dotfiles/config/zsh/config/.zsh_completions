@@ -3,9 +3,11 @@
 {%@@ if profile == "fedora" @@%}
 # load completions from folder
 fpath+=(
-	"$ZDOTDIR/completions"
-	"${fpath[@]}"
+	$ZDOTDIR/completions
+	fpath
 	)
+
+source $ZDOTDIR/completions/_fzf
 
 # Load nodenv completions
 source $HOME/.nodenv/libexec/../completions/nodenv.zsh
