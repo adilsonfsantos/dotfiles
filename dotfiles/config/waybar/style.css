@@ -1,7 +1,7 @@
 * {
 	border: none;
 	border-radius: 0px;
-	font-family: "JetBrainsMono Nerd Font Mono", "Material Design Icons Desktop";
+	font-family: "JetBrainsMono Nerd Font";
 	font-size: 12px;
 }
 
@@ -28,6 +28,7 @@
 	border: none;
 	color: #545c7e;
 	padding: 0px 4px;
+	margin: 0px 8px 0px 0px;
 }
 
 #workspaces button.focused {
@@ -60,11 +61,12 @@
 
 #custom-power {
 	color: #f7768e;
-	font-size: 24px;
+	font-size: 20px;
+	margin-right: 2px;
 }
 
 #privacy {
-	font-size: 4px;
+	font-size: 20px;
 }
 
 #custom-quit,

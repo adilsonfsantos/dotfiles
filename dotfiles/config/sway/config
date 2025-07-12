@@ -201,6 +201,7 @@ bindsym {
 
 # Workspaces
 assign [app_id="firefox"] workspace number 1
+assign [app_id="librewolf"] workspace number 1
 assign [app_id="sublime_text"] workspace number 3
 assign [app_id="sublime_merge"] workspace number 4
 workspace 1 output DP-1
@@ -210,21 +211,19 @@ workspace 4 output DP-1
 workspace 5 output DP-1
 workspace 9 output HDMI-A-1
 workspace 10 output HDMI-A-1
-exec swaymsg "workspace 2; exec $term; exec sleep 1"
-exec swaymsg "workspace 10; exec $term"
 
 # Status Bar
 bar swaybar_command waybar
 
 # Styling
-font pango: JetBrainsMono Nerd Font Mono 11
+font pango: JetBrainsMono Nerd Font 11
 
 ## Window decoration
-### class                 border    backgr.   text      indicator child_border
-client.focused          #292e42 #1a1b26 #a9b1d6 #bb9af7 #bb9af7
-client.focused_inactive #292e42 #1a1b26 #a9b1d6 #bb9af7 #bb9af7
-client.unfocused        #545c7e #292e42 #545c7e #bb9af7 #545c7e
-client.urgent           #ff9e64 #ff9364 #1a1b26 #bb9af7 #ff9e64
+### class				border	backgr.	text	indic.	child_border
+client.focused          #7aa2f7 #1a1b26 #c0caf5 #7aa2f7 #7aa2f7
+client.focused_inactive #292e42 #292e42 #545c7e #292e42 #292e42
+client.unfocused        #292e42 #292e42 #545c7e #292e42 #292e42
+client.urgent           #ff9e64 #1a1b26 #ff9e64 #ff9e64 #ff9e64
 
 default_border pixel 2
 default_floating_border pixel 2

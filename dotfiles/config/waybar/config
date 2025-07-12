@@ -23,11 +23,11 @@
 	"sway/workspaces": {
 		"disable-scroll": true,
 		"all-outputs": true,
-		"format": "{icon}",
+		"format": "{name}: {icon}",
 		"format-icons": {
 			"focused": "󰝥",
-			"default": "󱓻",
-			"urgent": "󰀧"
+			"default": "",
+			"urgent": "󰔶"
 		}
 	},
 	"sway/window": {
@@ -41,7 +41,7 @@
 		"tooltip": false
 	},
 	"clock": {
-		"format": "󰃰 {:L%a. %d de %B, %R}",
+		"format": " {:L%a. %d de %B, %R}",
 		"tooltip-format": "<tt><small>{calendar}</small></tt>",
 		"locale": "pt_BR.UTF-8",
 		"calendar": {
@@ -88,23 +88,21 @@
 		"on-click": "shutdown now"
 	},
 	"wireplumber": {
-		"format": "{icon} {volume:>3}%",
+		"format": "{icon} {volume:>4}%",
 		"on-click": "exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
 		"on-click-right": "pavucontrol",
-		"format-muted": "󰝟   0%",
+		"format-muted": "   0%",
 		"format-icons": [
-			"󰕿",
-			"󰖀",
-			"󰕾",
-			"󰕾",
-			"󰕾"
+			"",
+			"",
+			""
 		]
 	},
 	"network": {
 		"format": "{ifname}",
 		"interval": 1,
-		"format-ethernet": "󰁅{bandwidthDownBytes:>10} | 󰁝{bandwidthUpBytes:>10}",
-		"format-disconnected": "󰲛 Desconectado",
+		"format-ethernet": "{bandwidthDownBytes:>10} | {bandwidthUpBytes:>10}",
+		"format-disconnected": "Desconectado",
 		"tooltip": false,
 		"max-length": 100
 	},
