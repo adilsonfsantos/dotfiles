@@ -10,33 +10,12 @@ alias rsync="rsync --info=PROGRESS2 -v"
 # ALIASES - Navigation
 alias ..="cd .."
 
-# ALIASES - Maintainance
-{%@@ if profile == "fedora" @@%}
-alias dnfu="sudo dnf upgrade"
-alias dnfc="sudo dnf autoremove"
-alias dnfs="dnf search"
-alias dnfi="sudo dnf install"
-alias dnfr="sudo dnf remove"
-{%@@ elif profile == "mac" @@%}
-alias purge="sudo purge"
-alias macu="sudo softwareupdate -i -a"
-
-# ALIASES - HomeBrew
-alias hbup="brew update && brew upgrade"
-alias hbcl="brew cleanup && brew autoremove"
-alias hbin="brew install"
-alias hbls="brew list"
-alias hbrm="brew uninstall"
-alias hbsc="brew search"
-{%@@ endif @@%}
-
 # ALIASES - Lazy
-alias hist="history"
 alias nowdate="date +'%d-%m-%Y'"
 alias nowtime="date +'%T'"
 
 # ALIASES - Utilities
-alias rld= "exec zsh"
+alias reload= "exec zsh"
 alias path="echo "$PATH" | tr : '\n'"
 {%@@ if profile == "fedora" @@%}
 alias swaytree= "swaymsg -t get_tree | rg"
@@ -59,20 +38,3 @@ alias dotdrop="$HOME/dotfiles/dotdrop.sh"
 alias dotgit="git -C $DOTREPO"
 alias dotsync="dotgit pull && dotgit add -A && dotgit commit && dotgit push; dotdrop install"
 alias dotup="git submodule update --init --recursive && git submodule update --remote dotdrop"
-
-# ALIASES - Bundle
-alias bunjek="bundle exec jekyll"
-alias bunup="bundle update"
-
-# ALIASES - Npm
-alias npmind="npm install --save-dev "
-alias npming="npm install --global"
-alias npmls="npm list"
-alias npmpub="npm publish"
-alias npms="npm install --save"
-alias npmst="npm start"
-
-# ALIASES - Node Utilities
-alias npmup="ncu -u && npm install"
-alias nodein="nodenv -l install node --reinstall-packages-from=node"
-alias nodeup="nodenv update"
