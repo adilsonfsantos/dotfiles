@@ -1,7 +1,7 @@
 # Autostart
 exec mako
+exec_always  wl-paste -p -t text --watch clipman store --no-persist --histpath="~/.local/share/clipman.json"
 exec clipman restore
-exec wl-paste -p -t text --watch clipman store -P --no-persist
 exec --no-startup-id /usr/bin/lxpolkit
 exec systemctl --user import-environment WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP SWAYSOCK I3SOCK XCURSOR_SIZE XCURSOR_THEME
 exec dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP SWAYSOCK I3SOCK XCURSOR_SIZE XCURSOR_THEME
@@ -181,7 +181,7 @@ bindsym {
 }
 
 # clipman history
-bindsym $mod2+v exec clipman pick --tool=CUSTOM --tool-args="fuzzel -d"
+bindsym $mod2+v exec clipman pick --tool=STDOUT | fuzzel --dmenu | wl-copy
 
 # Screenshot
 bindsym {
