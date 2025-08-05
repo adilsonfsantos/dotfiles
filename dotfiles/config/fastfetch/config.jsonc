@@ -7,38 +7,35 @@
 		// "title",
 		// "separator",
 		{
-			"type": "os"
+			"type": "os",
+			"format": "{3}"
 		},
 		"host",
-		"kernel",
-		"uptime",
-		"packages",
+		// "kernel",
+		// "uptime",
+		// "packages",
 		"display",
-		"de",
+		// "de",
 		"wm",
 		// "wmtheme",
 		// "theme",
 		// "icons",
-		"font",
+		// "font",
 		// "cursor",
-		"shell",
+		// "shell",
 		"terminal",
-		// "terminalfont",
+		"terminalfont",
 		"cpu",
 		{
 			"type": "gpu",
-			{%@@ if profile == "fedora" @@%}
 			"detectionMethod": "vulkan"
-			{%@@ elif profile == "mac" @@%}
-			"detectionMethod": "auto"
-			{%@@ endif @@%}
 		},
 		"memory",
-		"swap",
-		"disk",
+		// "swap",
+		// "disk",
 		// "localip",
-		"battery",
-		"poweradapter",
+		// "battery",
+		// "poweradapter",
 		// "locale",
 		"break",
 		"colors"
