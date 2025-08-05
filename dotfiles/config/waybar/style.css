@@ -5,21 +5,27 @@
 	font-size: 12px;
 }
 
-.modules-left {
-	margin-left: 12px;
+.modules-left,
+.modules-center,
+.modules-right {
+	color: #c0caf5;
 }
 
-.modules-center {
-	color: #c0caf5;
+.modules-left {
+	margin-left: 6px;
 }
 
 .modules-right {
-	margin-right: 16px;
-	color: #c0caf5;
+	margin-right: 6px;
 }
 
 #waybar {
 	background-color: #16161e;
+}
+
+#waybar.empty #window {
+	background-color: transparent;
+	padding: 0;
 }
 
 #workspaces button {
@@ -28,7 +34,6 @@
 	border: none;
 	color: #545c7e;
 	padding: 0px 4px;
-	margin: 0px 8px 0px 0px;
 }
 
 #workspaces button.focused {
@@ -46,12 +51,7 @@
 }
 
 #workspaces button.urgent {
-	color: #F22816;
-}
-
-#waybar.empty #window {
-	background-color: transparent;
-	padding: 0;
+	color: #f7768e;
 }
 
 #mode {
@@ -65,10 +65,6 @@
 	margin-right: 2px;
 }
 
-#privacy {
-	font-size: 20px;
-}
-
 #custom-quit,
 #custom-lock,
 #custom-reboot {
@@ -76,9 +72,12 @@
 	margin: 0 8px
 }
 
-
 #custom-reboot {
 	margin-right: 14px
+}
+
+#network.disconnected {
+	color: #f7768e;
 }
 
 tooltip {

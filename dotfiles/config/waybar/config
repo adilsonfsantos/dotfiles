@@ -1,20 +1,17 @@
 {
 	"position": "top",
-	"margin-top": 12,
-	"margin-left": 12,
-	"margin-right": 12,
-	"spacing": 24,
+	"spacing": 16,
 	"fixed-center": true,
 	"mode": "dock",
 	"modules-left": [
 		"sway/workspaces",
-		"sway/mode"
+		"sway/mode",
+		"privacy"
 	],
 	"modules-center": [
 		"sway/window"
 	],
 	"modules-right": [
-		"privacy",
 		"network",
 		"wireplumber",
 		"clock",
@@ -23,12 +20,7 @@
 	"sway/workspaces": {
 		"disable-scroll": true,
 		"all-outputs": true,
-		"format": "{name}: {icon}",
-		"format-icons": {
-			"focused": "󰝥",
-			"default": "",
-			"urgent": "󰔶"
-		}
+		"format": "{name}"
 	},
 	"sway/window": {
 		"format": "{title}",
@@ -61,7 +53,7 @@
 			"transition-left-to-right": false
 		},
 		"modules": [
-			"custom/power", // First element is the "group leader" and won't ever be hidden
+			"custom/power",
 			"custom/quit",
 			"custom/lock",
 			"custom/reboot"
@@ -101,10 +93,11 @@
 	"network": {
 		"format": "{ifname}",
 		"interval": 1,
-		"format-ethernet": "{bandwidthDownBytes:>10} | {bandwidthUpBytes:>10}",
-		"format-disconnected": "Desconectado",
-		"tooltip": false,
-		"max-length": 100
+		"format-ethernet": " ",
+		"format-disconnected": " ",
+		"tooltip-format-ethernet": "Conectado",
+		"tooltip-format-disconnected": "Sem conexão",
+		"max-length": 50
 	},
 	"privacy": {
 		"icon-spacing": 8,
