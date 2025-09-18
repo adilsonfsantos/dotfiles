@@ -4,14 +4,11 @@
 # load completions from folder
 fpath+=(
 	$ZDOTDIR/completions
+	$HOME/.nodenv/completions
 	fpath
 	)
 
 source $ZDOTDIR/completions/_fzf
-
-# Load nodenv completions
-source $HOME/.nodenv/libexec/../completions/nodenv.zsh
-
 {%@@ elif profile == "mac" @@%}
 source /usr/local/Cellar/fzf/*/shell/key-bindings.zsh
 source /usr/local/Cellar/fzf/*/shell/completion.zsh
@@ -23,7 +20,6 @@ source /usr/local/Cellar/nodenv/*/libexec/../completions/nodenv.zsh
 
 # Nodenv rehash commands
 NODENV_SHELL=zsh
-command nodenv rehash 2>/dev/null
 nodenv() {
 	local command
 	command="${1:-}"
@@ -35,7 +31,7 @@ nodenv() {
 	rehash|shell|update)
 		eval "$(nodenv "sh-$command" "$@")";;
 	*)
-	command nodenv "$command" "$@";;
+		command nodenv "$command" "$@";;
 	esac
 }
 

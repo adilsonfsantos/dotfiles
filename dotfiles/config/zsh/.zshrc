@@ -7,7 +7,7 @@ fi
 
 # prevent duplicates and omit additional checks in startup
 # https://www.reddit.com/r/zsh/comments/1kjferw/comment/mrmghrt
-typeset -gU cdpath fpath path
+typeset -gU PATH cdpath fpath path
 
 # GENERAL settings
 {%@@ if profile == "fedora" @@%}
@@ -16,8 +16,7 @@ path+=(
 	$HOME/.rbenv/bin
 	$HOME/bin
 	$HOME/.deno/bin
-	$HOME/.nodenv/shims:${PATH}
-	$path[@]
+	$path
 )
 {%@@ elif profile == "mac" @@%}
 path+=(
@@ -29,7 +28,6 @@ path+=(
 	/usr/sbin
 	/sbin
 	$HOME/.local/bin
-	$HOME/.nodenv/shims
 	$path[@]
 )
 fpath+=(
@@ -44,6 +42,7 @@ export HOMEBREW_REPOSITORY="/usr/local/Homebrew";
 [ -z "${MANPATH-}" ] || export MANPATH=":${MANPATH#:}";
 export INFOPATH="/usr/local/share/info:${INFOPATH:-}";
 {%@@ endif @@%}
+export PATH="$HOME/.nodenv/shims:${PATH}"
 export EDITOR=nvim
 export VISUAL=nvim
 export LC_ALL=pt_BR.UTF-8
@@ -89,20 +88,20 @@ export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
 export DOTREPO="$HOME/dotfiles"
 export Work="$HOME/Work"
 # HISTORY Settings
-HISTSIZE=100000
+HISTFILE=$ZDOTDIR/.zsh_history
+HISTSIZE=1000000
+HISTTIMEFORMAT="[%F %T]"
 SAVEHIST=$HISTSIZE
-export HISTFILE=$ZDOTDIR/.zsh_history
-export HISTIGNORE="&:ls:[bf]g:exit:reset:clear:cd:cd ..:cd..:zh:exa"
-export HISTSIZE=1000000
-export HISTTIMEFORMAT="[%F %T]"
-export SAVEHIST=$HISTSIZE
 setopt HIST_FIND_NO_DUPS
 setopt HIST_IGNORE_ALL_DUPS
-setopt HIST_IGNORE_SPACE
 setopt HIST_REDUCE_BLANKS
 setopt HIST_SAVE_NO_DUPS
+setopt APPEND_HISTORY
 setopt INC_APPEND_HISTORY
 setopt SHARE_HISTORY
+setopt AUTOCD
+setopt DOT_GLOB
+setopt EXTENDED_GLOB
 
 [[ -f $ZDOTDIR/config/.zsh_aliases ]] && source $ZDOTDIR/config/.zsh_aliases
 {%@@ if profile == "fedora" @@%}

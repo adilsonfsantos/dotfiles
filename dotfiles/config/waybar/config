@@ -6,12 +6,12 @@
 	"modules-left": [
 		"sway/workspaces",
 		"sway/mode",
-		"privacy"
 	],
 	"modules-center": [
 		"sway/window"
 	],
 	"modules-right": [
+		"privacy",
 		"network",
 		"wireplumber",
 		"clock",
