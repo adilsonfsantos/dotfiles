@@ -31,7 +31,6 @@ dotfiles:
   f_imagens_background:
     src: Imagens/09.jpg
     dst: ~/Imagens/09.jpg
-    chmod: '777'
   f_config_sublime-text_default.profile:
     src: config/sublime-text/Packages/sublime-profiles/Data/Default.profile
     dst: ~/.config/sublime-text/Packages/sublime-profiles/Data/Default.profile
@@ -59,20 +58,20 @@ dotfiles:
     ignoreempty: true
     cmpignore:
     - '*/plugins'
-    - .zcompdump
-    - .zsh_history
+    - '.zcompdump'
+    - '.zsh_history'
     - '*.zwc'
     - '*/completions/*'
     upignore:
     - '*/plugins'
-    - .zcompdump
-    - .zsh_history
+    - '.zcompdump'
+    - '.zsh_history'
     - '*.zwc'
     - '*/completions/*'
     instignore:
     - '*/plugins'
-    - .zcompdump
-    - .zsh_history
+    - '.zcompdump'
+    - '.zsh_history'
     - '*.zwc'
     - '*/completions/*'
   d_config_btop:
@@ -105,7 +104,6 @@ dotfiles:
   d_config_fastfetch:
     src: config/fastfetch
     dst: ~/.config/fastfetch
-    chmod: '744'
   d_config_kitty:
     src: config/kitty
     dst: ~/.config/kitty
