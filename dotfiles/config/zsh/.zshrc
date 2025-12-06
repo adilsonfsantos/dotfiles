@@ -28,7 +28,7 @@ path+=(
 	/usr/sbin
 	/sbin
 	$HOME/.local/bin
-	$path[@]
+	$path
 )
 fpath+=(
   /usr/share/zsh/site-functions
@@ -47,6 +47,7 @@ export EDITOR=nvim
 export VISUAL=nvim
 export LC_ALL=pt_BR.UTF-8
 export LANG=pt_BR.UTF-8
+
 # FZF Settings
 export FZF_DEFAULT_COMMAND="fd --type f --strip-cwd-prefix --hidden"
 export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS \
@@ -84,45 +85,59 @@ export FZF_CTRL_R_OPTS="
 	--color header:italic
 	--header 'Press CTRL-Y to copy command into clipboard'"
 export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
+
 # EXPORTS DIRs
 export DOTREPO="$HOME/dotfiles"
 export Work="$HOME/Work"
+
 # HISTORY Settings
 HISTFILE=$ZDOTDIR/.zsh_history
 HISTSIZE=1000000
 HISTTIMEFORMAT="[%F %T]"
 SAVEHIST=$HISTSIZE
-setopt HIST_FIND_NO_DUPS
-setopt HIST_IGNORE_ALL_DUPS
-setopt HIST_REDUCE_BLANKS
-setopt HIST_SAVE_NO_DUPS
-setopt APPEND_HISTORY
-setopt INC_APPEND_HISTORY
-setopt SHARE_HISTORY
-setopt AUTOCD
-setopt DOT_GLOB
-setopt EXTENDED_GLOB
+setopt HIST_FIND_NO_DUPS HIST_IGNORE_ALL_DUPS HIST_REDUCE_BLANKS
+setopt HIST_SAVE_NO_DUPS APPEND_HISTORY INC_APPEND_HISTORY SHARE_HISTORY
 
+# General Zsh options
+setopt AUTOCD DOT_GLOB EXTENDED_GLOB
+
+# Load aliases and key bindings
 [[ -f $ZDOTDIR/config/.zsh_aliases ]] && source $ZDOTDIR/config/.zsh_aliases
 {%@@ if profile == "fedora" @@%}
 [[ -f $ZDOTDIR/config/.zsh_bindings ]] && source $ZDOTDIR/config/.zsh_bindings
 {%@@ endif @@%}
 
-# Carrega as funções
+# Sources personal functions with automatic compilation
+
 fpath+=(
 	"$ZDOTDIR/functions"
 	"${fpath[@]}"
 	)
 
-zcompile -z "$ZDOTDIR/.functions.zwc" \
-"$ZDOTDIR/functions/f_load_plugins" \
-"$ZDOTDIR/functions/f_update_plugins"
-autoload -wUz "$ZDOTDIR/.functions.zwc"
+FUNCTIONS_DIR="$ZDOTDIR/functions"
+CACHE_DIR="$ZDOTDIR/.functions_cache"
+mkdir -p "$CACHE_DIR"
 
-f_load_plugins
+for f in "$FUNCTIONS_DIR"/*.zsh; do
+	[[ -r $f ]] || continue
+	zwc="$f.zwc"
 
+	hash_file="$CACHE_DIR/$(basename "$f").sha1"
+	current_hash=$(sha1sum "$f" | awk '{print $1}')
+	if [[ ! -f $zwc || ! -f $hash_file || "$current_hash" != "$(cat $hash_file)" ]]; then
+		zcompile -R "$zwc" "$f" 2>/dev/null
+		echo "$current_hash" > "$hash_file"
+	fi
+
+	# Sources compiled function
+	source "$f"
+done
+
+# Load external plugins (clonning and compiling)
+# [[ -f "$ZDOTDIR/functions/f_load_plugins.zsh" ]] && source "$ZDOTDIR/functions/f_load_plugins.zsh"
+# f_plugins
+
+# Load completions and plugin sources
 [[ -f $ZDOTDIR/config/.zsh_completions ]] && source $ZDOTDIR/config/.zsh_completions
 [[ -f $ZDOTDIR/config/.zsh_plugins ]] && source $ZDOTDIR/config/.zsh_plugins
 
-# source $ZDOTDIR/functions/f_init_completions
-# f_compile_plugins

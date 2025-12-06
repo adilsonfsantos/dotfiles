@@ -62,18 +62,21 @@ dotfiles:
     - '.zsh_history'
     - '*.zwc'
     - '*/completions/*'
+    - '*/.functions_cache/*'
     upignore:
     - '*/plugins'
     - '.zcompdump'
     - '.zsh_history'
     - '*.zwc'
     - '*/completions/*'
+    - '*/.functions_cache/*'
     instignore:
     - '*/plugins'
     - '.zcompdump'
     - '.zsh_history'
     - '*.zwc'
     - '*/completions/*'
+    - '*/.functions_cache/*'
   d_config_btop:
     src: config/btop
     dst: ~/.config/btop/

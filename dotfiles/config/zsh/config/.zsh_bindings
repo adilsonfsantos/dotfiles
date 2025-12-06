@@ -1,5 +1,5 @@
 {%@@ if profile == "fedora" @@%}
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 # Fixes tilde escaping on terminal
 # https://wiki.archlinux.org/title/Zsh#Key_bindings

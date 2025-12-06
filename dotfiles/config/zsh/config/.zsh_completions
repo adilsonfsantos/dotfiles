@@ -1,14 +1,14 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 {%@@ if profile == "fedora" @@%}
 # load completions from folder
 fpath+=(
-	$ZDOTDIR/completions
-	$HOME/.nodenv/completions
-	fpath
+	"$ZDOTDIR/completions"
+	"$HOME/.nodenv/completions"
+	"${fpath[@]}"
 	)
 
-source $ZDOTDIR/completions/_fzf
+[[ -f "$ZDOTDIR/completions/_fzf" ]] && source $ZDOTDIR/completions/_fzf
 {%@@ elif profile == "mac" @@%}
 source /usr/local/Cellar/fzf/*/shell/key-bindings.zsh
 source /usr/local/Cellar/fzf/*/shell/completion.zsh
@@ -35,6 +35,7 @@ nodenv() {
 	esac
 }
 
-# #Enable the "new" completion system (compsys).
+# Enable the "new" completion system (compsys).
 autoload -Uz compinit && compinit
-[[ $ZDOTDIR/.zcompdump.zwc -nt $ZDOTDIR/.zcompdump ]] || zcompile $ZDOTDIR/.zcompdump
+[[ -f $ZDOTDIR/.zcompdump ]] && [[ $ZDOTDIR/.zcompdump.zwc -nt $ZDOTDIR/.zcompdump ]] || zcompile $ZDOTDIR/.zcompdump
+
