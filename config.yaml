@@ -28,7 +28,7 @@ dotfiles:
   f_ignore:
     src: ignore
     dst: ~/.ignore
-  f_imagens_background:
+  f_background:
     src: Imagens/09.jpg
     dst: ~/Imagens/09.jpg
   f_config_sublime-text_default.profile:
@@ -38,19 +38,19 @@ dotfiles:
     src: config/sublime-text/Packages/sublime-profiles/Data/Writer.profile
     dst: ~/.config/sublime-text/Packages/sublime-profiles/Data/Writer.profile
   f_library_sublime-text_tokyonight_night.tmtheme:
-    src: Library/Application Support/Sublime Text 
+    src: Library/Application Support/Sublime Text
       3/Packages/tokyonight_night.tmTheme
-    dst: ~/Library/Application Support/Sublime Text 
+    dst: ~/Library/Application Support/Sublime Text
       3/Packages/tokyonight_night.tmTheme
   f_library_sublime-text_default.profile:
-    src: Library/Application Support/Sublime Text 
+    src: Library/Application Support/Sublime Text
       3/Packages/sublime-profiles/Data/Default.profile
-    dst: ~/Library/Application Support/Sublime Text 
+    dst: ~/Library/Application Support/Sublime Text
       3/Packages/sublime-profiles/Data/Default.profile
   f_library_sublime-text_writer.profile:
-    src: Library/Application Support/Sublime Text 
+    src: Library/Application Support/Sublime Text
       3/Packages/sublime-profiles/Data/Writer.profile
-    dst: ~/Library/Application Support/Sublime Text 
+    dst: ~/Library/Application Support/Sublime Text
       3/Packages/sublime-profiles/Data/Writer.profile
   d_config_zsh:
     src: config/zsh
@@ -113,7 +113,7 @@ profiles:
     - f_zshenv
     - f_p10k.zsh
     - f_ignore
-    - f_imagens_background
+    - f_background
     - d_config_zsh
     - d_config_btop
     - d_config_fastfetch
