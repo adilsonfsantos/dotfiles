@@ -3,15 +3,9 @@
 {%@@ if profile == "fedora" @@%}
 # load completions from folder
 fpath+=(
-<<<<<<< HEAD
 	"$ZDOTDIR/completions"
 	"$HOME/.nodenv/completions"
 	"${fpath[@]}"
-=======
-	$ZDOTDIR/completions
-	$HOME/.nodenv/completions
-	$fpath
->>>>>>> macoslocal
 	)
 
 [[ -f "$ZDOTDIR/completions/_fzf" ]] && source $ZDOTDIR/completions/_fzf

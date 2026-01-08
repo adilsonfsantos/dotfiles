@@ -7,31 +7,31 @@ config:
   cmpignore:
   - '*.log'
   - '*.zcompcache/*'
-  - '.zcompdump'
+  - '*.zcompdump'
   - '*.zsh_sessions/*'
-  - '.DS_Store'
-  - '.iterm2_shell_integration.zsh'
+  - '*.DS_Store'
+  - '*.iterm2_shell_integration.zsh'
   upignore:
   - '*.log'
   - '*.zcompcache/*'
-  - '.zcompdump'
+  - '*.zcompdump'
   - '*.zsh_sessions/*'
-  - '.DS_Store'
-  - '.iterm2_shell_integration.zsh'
+  - '*.DS_Store'
+  - '*.iterm2_shell_integration.zsh'
   instignore:
   - '*.log'
   - '*.zcompcache/*'
-  - '.zcompdump'
+  - '*.zcompdump'
   - '*.zsh_sessions/*'
-  - '.DS_Store'
-  - '.iterm2_shell_integration.zsh'
+  - '*.DS_Store'
+  - '*.iterm2_shell_integration.zsh'
   impignore:
   - '*.log'
   - '*.zcompcache/*'
-  - '.zcompdump'
+  - '*.zcompdump'
   - '*.zsh_sessions/*'
-  - '.DS_Store'
-  - '.iterm2_shell_integration.zsh'
+  - '*.DS_Store'
+  - '*.iterm2_shell_integration.zsh'
 
 dotfiles:
   f_zshenv:
