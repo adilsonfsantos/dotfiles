@@ -5,7 +5,7 @@
 fpath+=(
 	$ZDOTDIR/completions
 	$HOME/.nodenv/completions
-	fpath
+	$fpath
 	)
 
 source $ZDOTDIR/completions/_fzf
@@ -13,7 +13,10 @@ source $ZDOTDIR/completions/_fzf
 source /usr/local/Cellar/fzf/*/shell/key-bindings.zsh
 source /usr/local/Cellar/fzf/*/shell/completion.zsh
 
-source /usr/local/Cellar/nodenv/*/libexec/../completions/nodenv.zsh
+fpath+=(
+	$ZDOTDIR/completions
+	$fpath
+	)
 
 [[ -f $ZDOTDIR/.iterm2_shell_integration.zsh ]] && source $ZDOTDIR/.iterm2_shell_integration.zsh
 {%@@ endif @@%}

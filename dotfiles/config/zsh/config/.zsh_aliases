@@ -34,7 +34,11 @@ alias pwrmouse="ioreg -c BNBMouseDevice |grep '\"BatteryPercent\" ='"
 {%@@ endif @@%}
 
 # ALIASES - Dotfiles
+{%@@ if profile == "fedora" @@%}
 alias dotdrop="$HOME/dotfiles/dotdrop.sh"
 alias dotgit="git -C $DOTREPO"
 alias dotsync="dotgit pull && dotgit add -A && dotgit commit && dotgit push; dotdrop install"
 alias dotup="git submodule update --init --recursive && git submodule update --remote dotdrop"
+{%@@ elif profile == "mac" @@%}
+alias dotdrop="dotdrop --cfg=$HOME/dotfiles/config.yaml"
+{%@@ endif @@%}
