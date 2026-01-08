@@ -3,9 +3,15 @@
 {%@@ if profile == "fedora" @@%}
 # load completions from folder
 fpath+=(
+<<<<<<< HEAD
 	"$ZDOTDIR/completions"
 	"$HOME/.nodenv/completions"
 	"${fpath[@]}"
+=======
+	$ZDOTDIR/completions
+	$HOME/.nodenv/completions
+	$fpath
+>>>>>>> macoslocal
 	)
 
 [[ -f "$ZDOTDIR/completions/_fzf" ]] && source $ZDOTDIR/completions/_fzf
@@ -13,7 +19,10 @@ fpath+=(
 source /usr/local/Cellar/fzf/*/shell/key-bindings.zsh
 source /usr/local/Cellar/fzf/*/shell/completion.zsh
 
-source /usr/local/Cellar/nodenv/*/libexec/../completions/nodenv.zsh
+fpath+=(
+	$ZDOTDIR/completions
+	$fpath
+	)
 
 [[ -f $ZDOTDIR/.iterm2_shell_integration.zsh ]] && source $ZDOTDIR/.iterm2_shell_integration.zsh
 {%@@ endif @@%}
