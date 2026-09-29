@@ -57,3 +57,11 @@ Temporary Items
 .history
 
 # End of https://www.gitignore.io/api/linux,macos,visualstudiocode
+
+#.zsh files
+.zsh_sessions
+.zsh_history
+.zcompdump*
+
+*.tmp
+*.zwc

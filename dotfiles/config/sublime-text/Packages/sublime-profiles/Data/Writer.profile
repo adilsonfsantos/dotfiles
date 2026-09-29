@@ -6,7 +6,7 @@
   "draw_indent_guides": false,
   "draw_white_space": ["none"],
   "font_face": "Writer",
-  "font_size": 16,
+  "font_size": 13,
   "gutter": false,
   "highlight_line": false,
   "line_padding_bottom": 6,
