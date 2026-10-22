@@ -5,7 +5,6 @@
 fpath+=(
 	"$ZDOTDIR/completions"
 	"$HOME/.nodenv/completions"
-	"${fpath[@]}"
 	)
 
 [[ -f "$ZDOTDIR/completions/_fzf" ]] && source $ZDOTDIR/completions/_fzf
@@ -41,4 +40,3 @@ nodenv() {
 # Enable the "new" completion system (compsys).
 autoload -Uz compinit && compinit
 [[ -f $ZDOTDIR/.zcompdump ]] && [[ $ZDOTDIR/.zcompdump.zwc -nt $ZDOTDIR/.zcompdump ]] || zcompile $ZDOTDIR/.zcompdump
-

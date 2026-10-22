@@ -1,24 +1,24 @@
 #!/usr/bin/env zsh
 
 # ALIASES - Defaults
-alias rm="rm -iv"
+alias rm="rm -Iv --preserve-root"
 alias cp="cp -iv"
-alias mv="mv -iv"
-alias sudo="sudo"
-alias rsync="rsync --info=PROGRESS2 -v"
+alias mv="mv -i"
+alias rsync="rsync --info=PROGRESS2 -ah"
+alias grep="grep --color=auto"
 
 # ALIASES - Navigation
 alias ..="cd .."
 
 # ALIASES - Lazy
-alias nowdate="date +'%d-%m-%Y'"
-alias nowtime="date +'%T'"
+alias nowdate="date +%d-%m-%Y"
+alias nowtime="date +%T"
 
 # ALIASES - Utilities
-alias reload= "exec zsh"
-alias path="echo "$PATH" | tr : '\n'"
+alias reload="exec zsh"
+alias path="print -l $path"
 {%@@ if profile == "fedora" @@%}
-alias swaytree= "swaymsg -t get_tree | rg"
+alias swaytree="swaymsg -t get_tree | rg"
 alias tips="fastfetch"
 {%@@ elif profile == "mac" @@%}
 alias rmds="fd -H '^\.DS_Store$' -tf -X rm -i"

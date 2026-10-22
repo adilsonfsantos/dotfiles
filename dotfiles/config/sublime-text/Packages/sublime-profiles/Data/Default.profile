@@ -1,19 +1,31 @@
 {
-	"font_face": "Fira Code",
-	"font_size": 13,
+	"font_face": "JetBrainsMono Nerd Font Mono",
+	"font_size": 12,
 	"tab_size": 4,
 	"word_wrap": "true",
-	"wrap_width": 120,
+	"wrap_width": 100,
 	"draw_white_space": ["none"],
  	"line_padding_bottom": 2,
  	"line_padding_top": 2,
- 	"caret_extra_width": 2,
-	"ignored_packages":
-	[
-		"Vintage",
-	],
 	"theme": "Adaptive.sublime-theme",
-	"dictionary": "Packages/Language/Portuguese (Brazilian).dic",
 	"color_scheme": "Packages/User/tokyonight_night.tmTheme",
-	"index_files": true,
+  // Personal options
+  "caret_style": "phase",
+  "dictionary": "[Packages/Language/Portuguese (Brazilian).dic, Packages/Language - English/en_US.dic]",
+  "enki_theme_compact_sidebar": true,
+  "enki_theme_panel_separator": true,
+  "enki_theme_small_statusbar": true,
+  "enki_theme_small_tab": true,
+  "enki_theme_tabs_autowidth": true,
+  "enki_theme_tree_headings": false,
+  "overlay_scroll_bars": "enabled",
+  "index_files": true,
+  "rulers": [50, 72],
+  "show_encoding": true,
+  "show_line_endings": true,
+  "spell_check": true,
+  "ignored_packages":
+  [
+    "Vintage",
+  ],
 }

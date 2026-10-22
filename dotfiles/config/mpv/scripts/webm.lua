@@ -1,4 +1,3 @@
-
 local mp = require("mp")
 local assdraw = require("mp.assdraw")
 local msg = require("mp.msg")
@@ -26,6 +25,12 @@ local options = {
 	-- %S, %E - Start and end time, without milliseconds
 	-- %M - "-audio", if audio is enabled, empty otherwise
 	-- %R - "-(height)p", where height is the video's height, or scale_height, if it's enabled.
+	-- %n - Sequence number (1, 2, 3, ...). The first filename (starting
+	-- at 1) not already taken in the output directory is selected when
+	-- formatting, so gaps left by deleted clips are filled. There is no
+	-- persistent counter to reset; concurrent encodes may still race.
+	-- Use %04n (or %02n, etc.) to zero-pad (clip_%04n -> clip_0001, ...).
+	-- Templates without a counter keep the previous behavior (may overwrite).
 	-- More specifiers are supported, see https://mpv.io/manual/master/#options-screenshot-template
 	-- Property expansion is supported (with %{} at top level, ${} when nested), see https://mpv.io/manual/master/#property-expansion
 	output_template = "%F-[%s-%e]%M",
@@ -52,6 +57,7 @@ local options = {
 	-- av1
 	-- hevc
 	-- webm-vp9 (libvpx-vp9/libopus)
+	-- webp
 	-- avc (h264/AAC)
 	-- avc-nvenc (h264-NVENC/AAC)
 	-- webm-vp8 (libvpx/libvorbis)
@@ -85,6 +91,22 @@ local options = {
 	-- Force square pixels on output video
 	-- Some players like recent Firefox versions display videos with non-square pixels with wrong aspect ratio
 	force_square_pixels = false,
+	-- MPV command to run upon successful encoding
+	-- %{output} will be replaced with the path to the resulting file.
+	completion_command = "",
+	-- Where "encode & upload" (u) sends the clip. Only the Catbox services are
+	-- supported: "catbox" (permanent until 2 years of inactivity) or
+	-- "litterbox" (temporary, expires after litterbox_time).
+	upload_host = "catbox",
+	-- Expiry for litterbox uploads: 1h, 12h, 24h or 72h.
+	litterbox_time = "24h",
+	-- Optional Catbox account hash. Account uploads are permanent and can be
+	-- managed (deleted) from the Catbox account.
+	catbox_userhash = "",
+	-- curl executable used for the multipart upload.
+	upload_curl_path = "curl",
+	-- Open the uploaded link in the browser as soon as it is ready.
+	open_after_upload = false,
 }
 
 mpopts.read_options(options)
@@ -129,8 +151,60 @@ test_set_options = function(new_options_json)
   for k, v in pairs(new_options) do
     options[k] = v
   end
+  return emit_event("options-set")
 end
 mp.register_script_message("mpv-webm-set-options", test_set_options)
+local register_test_handlers
+register_test_handlers = function(main_page)
+  mp.register_script_message("mpv-webm-set-range", function(range_json)
+    local range = utils.parse_json(range_json)
+    main_page.startTime = range.startTime
+    main_page.endTime = range.endTime
+    if range.region then
+      local _list_0 = {
+        "x",
+        "y",
+        "w",
+        "h"
+      }
+      for _index_0 = 1, #_list_0 do
+        local key = _list_0[_index_0]
+        main_page.region[key] = range.region[key]
+      end
+    end
+    return emit_event("range-set")
+  end)
+  mp.register_script_message("mpv-webm-encode", function()
+    return main_page:encode()
+  end)
+  mp.register_script_message("mpv-webm-upload", function()
+    return main_page:upload()
+  end)
+  return mp.register_script_message("mpv-webm-get-state", function()
+    local mouse_x, mouse_y = mp.get_mouse_pos()
+    local osd_w, osd_h = mp.get_osd_size()
+    local state_json = utils.format_json({
+      startTime = main_page.startTime,
+      endTime = main_page.endTime,
+      region = {
+        x = main_page.region.x,
+        y = main_page.region.y,
+        w = main_page.region.w,
+        h = main_page.region.h
+      },
+      mainVisible = main_page.visible or false,
+      mouse = {
+        x = mouse_x,
+        y = mouse_y
+      },
+      osd = {
+        w = osd_w,
+        h = osd_h
+      }
+    })
+    return emit_event("state", state_json)
+  end)
+end
 local bold
 bold = function(text)
   return "{\\b1}" .. tostring(text) .. "{\\b0}"
@@ -230,8 +304,17 @@ expand_properties = function(text, magic)
   end
   return text
 end
+local sequence_escape_placeholder = string.char(31) .. "MPVWEBMESC" .. string.char(31)
+local sequence_placeholder_prefix = string.char(31) .. "MPVWEBMSEQ"
+local format_sequence_number
+format_sequence_number = function(n, width)
+  if width and width > 0 then
+    return string.format("%0" .. tostring(width) .. "d", n)
+  end
+  return tostring(n)
+end
 local format_filename
-format_filename = function(startTime, endTime, videoFormat)
+format_filename = function(startTime, endTime, videoFormat, outDir)
   local hasAudioCodec = videoFormat.audioCodec ~= ""
   local replaceFirst = {
     ["%%mp"] = "%%mH.%%mM.%%mS",
@@ -256,44 +339,92 @@ format_filename = function(startTime, endTime, videoFormat)
     ["%%ms"] = string.format("%d", math.floor(endTime)),
     ["%%mf"] = string.format("%s", endTime),
     ["%%mT"] = string.sub(string.format("%.3f", endTime % 1), 3),
-    ["%%f"] = mp.get_property("filename"),
-    ["%%F"] = mp.get_property("filename/no-ext"),
     ["%%s"] = seconds_to_path_element(startTime),
     ["%%S"] = seconds_to_path_element(startTime, true),
     ["%%e"] = seconds_to_path_element(endTime),
     ["%%E"] = seconds_to_path_element(endTime, true),
-    ["%%T"] = mp.get_property("media-title"),
     ["%%M"] = (mp.get_property_native('aid') and not mp.get_property_native('mute') and hasAudioCodec) and '-audio' or '',
     ["%%R"] = (options.scale_height ~= -1) and "-" .. tostring(options.scale_height) .. "p" or "-" .. tostring(mp.get_property_native('height')) .. "p",
+    ["%%mb"] = options.target_filesize / 1000,
     ["%%t%%"] = "%%"
   }
+  local mediaTable = {
+    ["%%f"] = mp.get_property("filename"),
+    ["%%F"] = mp.get_property("filename/no-ext"),
+    ["%%T"] = mp.get_property("media-title")
+  }
   local filename = options.output_template
+  local _
+  filename, _ = filename:gsub("%%%%", sequence_escape_placeholder)
+  local seq_widths = { }
+  filename, _ = filename:gsub("%%(0?%d*)n", function(digits)
+    local width = tonumber(digits) or 0
+    seq_widths[#seq_widths + 1] = width
+    return tostring(sequence_placeholder_prefix) .. tostring(#seq_widths) .. tostring(string.char(31))
+  end)
+  local has_seq = #seq_widths > 0
+  filename, _ = filename:gsub(sequence_escape_placeholder, function()
+    return "%"
+  end)
   for format, value in pairs(replaceFirst) do
-    local _
     filename, _ = filename:gsub(format, value)
   end
   for format, value in pairs(replaceTable) do
-    local _
     filename, _ = filename:gsub(format, value)
   end
+  for format, value in pairs(mediaTable) do
+    if value ~= nil then
+      local val = value
+      filename, _ = filename:gsub(format, function()
+        return val
+      end)
+    end
+  end
   if mp.get_property_bool("demuxer-via-network", false) then
-    local _
     filename, _ = filename:gsub("%%X{([^}]*)}", "%1")
     filename, _ = filename:gsub("%%x", "")
   else
     local x = string.gsub(mp.get_property("stream-open-filename", ""), string.gsub(mp.get_property("filename", ""), "%W", "%%%1") .. "$", "")
-    local _
-    filename, _ = filename:gsub("%%X{[^}]*}", x)
-    filename, _ = filename:gsub("%%x", x)
+    filename, _ = filename:gsub("%%X{[^}]*}", function()
+      return x
+    end)
+    filename, _ = filename:gsub("%%x", function()
+      return x
+    end)
   end
   filename = expand_properties(filename, "%")
   for format in filename:gmatch("%%t([aAbBcCdDeFgGhHIjmMnprRStTuUVwWxXyYzZ])") do
-    local _
     filename, _ = filename:gsub("%%t" .. format, os.date("%" .. format))
   end
-  local _
   filename, _ = filename:gsub("[<>:\"/\\|?*]", "")
-  return tostring(filename) .. "." .. tostring(videoFormat.outputExtension)
+  if not has_seq then
+    return tostring(filename) .. "." .. tostring(videoFormat.outputExtension)
+  end
+  if filename:find(sequence_placeholder_prefix, 1, true) == nil then
+    return tostring(filename) .. "." .. tostring(videoFormat.outputExtension)
+  end
+  local apply_sequence
+  apply_sequence = function(n)
+    local name = filename
+    for i, width in ipairs(seq_widths) do
+      local placeholder = tostring(sequence_placeholder_prefix) .. tostring(i) .. tostring(string.char(31))
+      local formatted = format_sequence_number(n, width)
+      name, _ = name:gsub(placeholder, formatted)
+    end
+    return name
+  end
+  if outDir == nil then
+    return tostring(apply_sequence(1)) .. "." .. tostring(videoFormat.outputExtension)
+  end
+  local checkDir = outDir == "" and "." or outDir
+  local n = 1
+  while true do
+    local candidate = tostring(apply_sequence(n)) .. "." .. tostring(videoFormat.outputExtension)
+    if not (file_exists(utils.join_path(checkDir, candidate))) then
+      return candidate
+    end
+    n = n + 1
+  end
 end
 local parse_directory
 parse_directory = function(dir)
@@ -534,6 +665,12 @@ do
       }, d.bottom_right)
       self.x = math.floor(d.ratios.w * (point.x - d.top_left.x) + 0.5)
       self.y = math.floor(d.ratios.h * (point.y - d.top_left.y) + 0.5)
+      if point.x >= d.bottom_right.x - 1 and point.x > d.top_left.x then
+        self.x = math.floor(d.ratios.w * (d.bottom_right.x - d.top_left.x) + 0.5)
+      end
+      if point.y >= d.bottom_right.y - 1 and point.y > d.top_left.y then
+        self.y = math.floor(d.ratios.h * (d.bottom_right.y - d.top_left.y) + 0.5)
+      end
     end,
     to_screen = function(self)
       local d = get_video_dimensions()
@@ -801,6 +938,194 @@ vp8_patch_logfile = function(logfile_path, encode_total_duration)
   stats_array[#stats_array]:set_duration(encode_total_duration)
   return write_stats_array_to_logfile(stats_array, logfile_path)
 end
+local hosts = {
+  catbox = {
+    id = "catbox",
+    label = "catbox.moe",
+    url = "https://catbox.moe/user/api.php",
+    time = nil
+  },
+  litterbox = {
+    id = "litterbox",
+    label = "litterbox.catbox.moe",
+    url = "https://litterbox.catbox.moe/resources/internals/api.php",
+    time = function()
+      return options.litterbox_time
+    end
+  }
+}
+local get_upload_host
+get_upload_host = function(id)
+  return hosts[id] or hosts.catbox
+end
+local upload_host_possible_values
+upload_host_possible_values = function()
+  return {
+    {
+      "catbox",
+      "catbox.moe"
+    },
+    {
+      "litterbox",
+      "litterbox.catbox.moe"
+    }
+  }
+end
+local upload_available = nil
+local is_upload_available
+is_upload_available = function()
+  if upload_available == nil then
+    local res = utils.subprocess({
+      args = {
+        options.upload_curl_path,
+        "--version"
+      },
+      playback_only = false
+    })
+    upload_available = res ~= nil and res.status == 0
+  end
+  return upload_available
+end
+local escape_form_path
+escape_form_path = function(path)
+  return path:gsub("([,;])", "\\%1")
+end
+local build_upload_args
+build_upload_args = function(path, host_id, response_path, progress_path)
+  local host = get_upload_host(host_id)
+  local args = {
+    options.upload_curl_path,
+    "-#",
+    "-S",
+    "-o",
+    response_path,
+    "--stderr",
+    progress_path,
+    "-w",
+    "%{http_code}"
+  }
+  append(args, {
+    "-F",
+    "reqtype=fileupload"
+  })
+  local time = host.time
+  if type(time) == "function" then
+    time = time()
+  end
+  if time and time ~= "" then
+    append(args, {
+      "-F",
+      "time=" .. tostring(time)
+    })
+  end
+  if host.id == "catbox" and options.catbox_userhash ~= "" then
+    append(args, {
+      "-F",
+      "userhash=" .. tostring(options.catbox_userhash)
+    })
+  end
+  append(args, {
+    "-F",
+    "fileToUpload=@" .. tostring(escape_form_path(path))
+  })
+  append(args, {
+    host.url
+  })
+  return args
+end
+local read_file
+read_file = function(path)
+  local file = io.open(path, "r")
+  if not file then
+    return nil
+  end
+  local content = file:read("*a")
+  file:close()
+  return content
+end
+local is_macos = file_exists("/Applications") and not is_windows
+local copy_to_clipboard
+copy_to_clipboard = function(text)
+  local ok, written = pcall(function()
+    return mp.set_property("clipboard/text", text)
+  end)
+  if ok and written then
+    return true
+  end
+  local candidates = { }
+  if is_windows then
+    candidates = {
+      {
+        "clip"
+      }
+    }
+  elseif is_macos then
+    candidates = {
+      {
+        "pbcopy"
+      }
+    }
+  else
+    candidates = {
+      {
+        "wl-copy"
+      },
+      {
+        "xclip",
+        "-selection",
+        "clipboard"
+      },
+      {
+        "xsel",
+        "--clipboard",
+        "--input"
+      }
+    }
+  end
+  for _index_0 = 1, #candidates do
+    local args = candidates[_index_0]
+    local handle = mp.command_native_async({
+      name = "subprocess",
+      args = args,
+      stdin_data = text,
+      playback_only = false
+    }, (function()
+      return nil
+    end))
+    if handle then
+      return true
+    end
+  end
+  return false
+end
+local open_url
+open_url = function(url)
+  if is_windows then
+    return utils.subprocess_detached({
+      args = {
+        "cmd",
+        "/c",
+        "start",
+        "",
+        url
+      }
+    })
+  elseif is_macos then
+    return utils.subprocess_detached({
+      args = {
+        "open",
+        url
+      }
+    })
+  else
+    return utils.subprocess_detached({
+      args = {
+        "xdg-open",
+        url
+      }
+    })
+  end
+end
 local formats = { }
 local Format
 do
@@ -825,7 +1150,7 @@ do
       end
       return codecs
     end,
-    postCommandModifier = function(self, command, region, startTime, endTime)
+    postCommandModifier = function(self, command, region, times)
       return command
     end
   }
@@ -1288,13 +1613,17 @@ do
   local _class_0
   local _parent_0 = Format
   local _base_0 = {
-    postCommandModifier = function(self, command, region, startTime, endTime)
+    postCommandModifier = function(self, command, region, times)
       local new_command = { }
-      local start_ts = seconds_to_time_string(startTime, false, true)
-      local end_ts = seconds_to_time_string(endTime, false, true)
+      local start_ts = seconds_to_time_string(times.sourceStart, false, true)
+      local end_ts = seconds_to_time_string(times.sourceEnd, false, true)
       start_ts = start_ts:gsub(":", "\\\\:")
       end_ts = end_ts:gsub(":", "\\\\:")
-      local cfilter = "[vid1]trim=start=" .. tostring(start_ts) .. ":end=" .. tostring(end_ts) .. "[vidtmp];"
+      local cfilter = "[in]trim=start=" .. tostring(start_ts) .. ":end=" .. tostring(end_ts) .. "[vidtmp];"
+      if times.speed ~= 1 then
+        cfilter = cfilter .. "[vidtmp]setpts=(PTS-" .. tostring(times.sourceStart) .. "/TB)/" .. tostring(times.speed) .. "[vidtmp];"
+        cfilter = cfilter .. "[vidtmp]setpts=PTS+" .. tostring(times.sourceStart) .. "/TB[vidtmp];"
+      end
       if mp.get_property("deinterlace") == "yes" then
         cfilter = cfilter .. "[vidtmp]yadif=mode=1[vidtmp];"
       end
@@ -1334,16 +1663,20 @@ do
           break
         end
       end
-      cfilter = cfilter .. "[vidtmp]split[topal][vidf];"
-      cfilter = cfilter .. "[topal]palettegen[pal];"
-      cfilter = cfilter .. "[vidf]fifo[vidf];"
-      cfilter = cfilter .. "[vidf][pal]paletteuse=diff_mode=rectangle"
-      if options.gif_dither ~= 6 then
-        cfilter = cfilter .. ":dither=bayer:bayer_scale=" .. tostring(options.gif_dither)
-      end
-      cfilter = cfilter .. "[vo]"
+      cfilter = cfilter .. "[vidtmp]null[out]"
       append(new_command, {
-        "--lavfi-complex=" .. tostring(cfilter)
+        "--vf-add=lavfi=[" .. tostring(cfilter) .. "]",
+        "--vf-add=sub"
+      })
+      local palette_filter = "[in]split[topal][vidf];"
+      palette_filter = palette_filter .. "[topal]palettegen[pal];"
+      palette_filter = palette_filter .. "[vidf][pal]paletteuse=diff_mode=rectangle"
+      if options.gif_dither ~= 6 then
+        palette_filter = palette_filter .. ":dither=bayer:bayer_scale=" .. tostring(options.gif_dither)
+      end
+      palette_filter = palette_filter .. "[out]"
+      append(new_command, {
+        "--vf-add=lavfi=[" .. tostring(palette_filter) .. "]"
       })
       return new_command
     end
@@ -1358,6 +1691,8 @@ do
       self.audioCodec = ""
       self.outputExtension = "gif"
       self.acceptsBitrate = false
+      self.handlesSpeedInFilterGraph = true
+      self.rendersSubtitlesInSourceTime = false
     end,
     __base = _base_0,
     __name = "GIF",
@@ -1387,6 +1722,71 @@ do
   GIF = _class_0
 end
 formats["gif"] = GIF()
+local WebP
+do
+  local _class_0
+  local _parent_0 = Format
+  local _base_0 = {
+    getFlags = function(self)
+      local qscale = math.max(0, math.min(100, 100 - (options.crf * 2.5)))
+      return {
+        "--ovcopts-add=threads=" .. tostring(options.threads),
+        "--ovcopts-add=compression_level=6",
+        "--ovcopts-add=qscale=" .. tostring(qscale),
+        "--ofopts-add=loop=0"
+      }
+    end,
+    postCommandModifier = function(self, command, region, times)
+      local new_command = { }
+      for _, v in ipairs(command) do
+        if not v:match("^%-%-ovcopts%-add=crf=") then
+          append(new_command, {
+            v
+          })
+        end
+      end
+      return new_command
+    end
+  }
+  _base_0.__index = _base_0
+  setmetatable(_base_0, _parent_0.__base)
+  _class_0 = setmetatable({
+    __init = function(self)
+      self.displayName = "WebP"
+      self.supportsTwopass = false
+      self.videoCodec = "libwebp"
+      self.audioCodec = ""
+      self.outputExtension = "webp"
+      self.acceptsBitrate = false
+    end,
+    __base = _base_0,
+    __name = "WebP",
+    __parent = _parent_0
+  }, {
+    __index = function(cls, name)
+      local val = rawget(_base_0, name)
+      if val == nil then
+        local parent = rawget(cls, "__parent")
+        if parent then
+          return parent[name]
+        end
+      else
+        return val
+      end
+    end,
+    __call = function(cls, ...)
+      local _self_0 = setmetatable({}, _base_0)
+      cls.__init(_self_0, ...)
+      return _self_0
+    end
+  })
+  _base_0.__class = _class_0
+  if _parent_0.__inherited then
+    _parent_0.__inherited(_parent_0, _class_0)
+  end
+  WebP = _class_0
+end
+formats["webp"] = WebP()
 local Page
 do
   local _class_0
@@ -1588,6 +1988,259 @@ do
   end
   EncodeWithProgress = _class_0
 end
+local UploadWithProgress
+do
+  local _class_0
+  local _parent_0 = Page
+  local _base_0 = {
+    prepare = function(self)
+      return self:startUpload()
+    end,
+    dispose = function(self)
+      self:stopTimer()
+      if self.responsePath then
+        os.remove(self.responsePath)
+      end
+      if self.progressPath then
+        return os.remove(self.progressPath)
+      end
+    end,
+    stopTimer = function(self)
+      if self.timer then
+        self.timer:kill()
+        self.timer = nil
+      end
+    end,
+    startUpload = function(self)
+      self.state = "uploading"
+      self.percent = 0
+      self.finished = false
+      self.cancelled = false
+      self.host = get_upload_host(options.upload_host)
+      local file = io.open(self.progressPath, "w")
+      if file then
+        file:close()
+      end
+      local args = build_upload_args(self.path, options.upload_host, self.responsePath, self.progressPath)
+      self.timer = mp.add_periodic_timer(0.2, (function()
+        local _base_1 = self
+        local _fn_0 = _base_1.pollProgress
+        return function(...)
+          return _fn_0(_base_1, ...)
+        end
+      end)())
+      self.handle = mp.command_native_async({
+        name = "subprocess",
+        args = args,
+        playback_only = false,
+        capture_stdout = true,
+        capture_stderr = false,
+        capture_size = 128
+      }, (function()
+        local _base_1 = self
+        local _fn_0 = _base_1.onFinished
+        return function(...)
+          return _fn_0(_base_1, ...)
+        end
+      end)())
+    end,
+    pollProgress = function(self)
+      if self.state ~= "uploading" then
+        return 
+      end
+      local content = read_file(self.progressPath)
+      if not content or content == "" then
+        return 
+      end
+      local percent = nil
+      for match in content:gmatch("(%d+%.?%d*)%%") do
+        percent = tonumber(match)
+      end
+      if percent and math.floor(percent) ~= self.percent then
+        self.percent = math.floor(percent)
+        return self:draw()
+      end
+    end,
+    onFinished = function(self, success, result, error)
+      if self.finished then
+        return 
+      end
+      self.finished = true
+      self:stopTimer()
+      if self.cancelled then
+        emit_event("upload-finished", "cancelled")
+        self:finish("cancelled")
+        return 
+      end
+      local httpCode = result and tonumber(result.stdout)
+      local response = trim(read_file(self.responsePath) or "")
+      local uploadOk = success and result and result.status == 0 and httpCode and httpCode >= 200 and httpCode < 300 and response:match("^https?://")
+      if uploadOk then
+        self.url = response
+        self.state = "done"
+        pcall(function()
+          return copy_to_clipboard(self.url)
+        end)
+        if options.open_after_upload then
+          pcall(function()
+            return open_url(self.url)
+          end)
+        end
+      else
+        self.state = "failed"
+        self.errorMessage = response
+        if self.errorMessage == "" then
+          self.errorMessage = (result and result.error_string) or tostring(error) or "upload failed"
+        end
+        self.errorMessage = self.errorMessage:gsub("%s+", " "):sub(1, 300)
+      end
+      emit_event("upload-finished", self.state)
+      return self:draw()
+    end,
+    onEscape = function(self)
+      if self.state == "uploading" then
+        self.cancelled = true
+        self:stopTimer()
+        if self.handle then
+          mp.abort_async_command(self.handle)
+        end
+        return mp.add_timeout(0.5, (function()
+          if not self.closing then
+            return self:finish("cancelled")
+          end
+        end))
+      else
+        return self:finish(self.state)
+      end
+    end,
+    copyAgain = function(self)
+      if self.state == "done" and self.url then
+        copy_to_clipboard(self.url)
+        return message("Link copied to clipboard.")
+      end
+    end,
+    openSomething = function(self)
+      if self.state == "done" and self.url then
+        return open_url(self.url)
+      elseif self.state == "failed" then
+        return self:finish("options")
+      end
+    end,
+    retry = function(self)
+      if self.state == "failed" then
+        return self:startUpload()
+      end
+    end,
+    finish = function(self, state)
+      if self.closing then
+        return 
+      end
+      self.closing = true
+      self:hide()
+      return self:callback(state)
+    end,
+    draw = function(self)
+      local window_w, window_h = mp.get_osd_size()
+      local ass = assdraw.ass_new()
+      ass:new_event()
+      self:setup_text(ass)
+      if self.state == "uploading" then
+        ass:append("Uploading (" .. tostring(bold(tostring(self.percent) .. "%")) .. ")\\N")
+        ass:append(tostring(self.filename) .. "\\N")
+        ass:append(tostring(self.sizeText) .. " to " .. tostring(self.host.label) .. "\\N\\N")
+        ass:append(tostring(bold('ESC:')) .. " cancel upload\\N")
+      elseif self.state == "done" then
+        ass:append(tostring(bold('Upload complete')) .. "\\N\\N")
+        ass:append(tostring(self.url) .. "\\N")
+        ass:append("Link copied to clipboard.\\N\\N")
+        ass:append(tostring(bold('c:')) .. " copy link again\\N")
+        ass:append(tostring(bold('o:')) .. " open in browser\\N")
+        ass:append(tostring(bold('ESC:')) .. " close\\N")
+      elseif self.state == "failed" then
+        ass:append(tostring(bold('Upload failed')) .. "\\N\\N")
+        ass:append(tostring(self.errorMessage) .. "\\N")
+        ass:append("The clip is still saved locally.\\N\\N")
+        ass:append(tostring(bold('r:')) .. " retry upload\\N")
+        ass:append(tostring(bold('o:')) .. " change upload options\\N")
+        ass:append(tostring(bold('ESC:')) .. " close\\N")
+      end
+      return mp.set_osd_ass(window_w, window_h, ass.text)
+    end
+  }
+  _base_0.__index = _base_0
+  setmetatable(_base_0, _parent_0.__base)
+  _class_0 = setmetatable({
+    __init = function(self, callback, path)
+      self.callback = callback
+      self.path = path
+      local _
+      _, self.filename = utils.split_path(path)
+      local info = utils.file_info(path)
+      self.sizeText = info and string.format("%.1f MB", info.size / 1000000) or "unknown size"
+      self.responsePath = os.tmpname()
+      self.progressPath = os.tmpname()
+      self.state = "uploading"
+      self.percent = 0
+      self.finished = false
+      self.cancelled = false
+      self.keybinds = {
+        ["ESC"] = (function()
+          local _base_1 = self
+          local _fn_0 = _base_1.onEscape
+          return function(...)
+            return _fn_0(_base_1, ...)
+          end
+        end)(),
+        ["c"] = (function()
+          local _base_1 = self
+          local _fn_0 = _base_1.copyAgain
+          return function(...)
+            return _fn_0(_base_1, ...)
+          end
+        end)(),
+        ["o"] = (function()
+          local _base_1 = self
+          local _fn_0 = _base_1.openSomething
+          return function(...)
+            return _fn_0(_base_1, ...)
+          end
+        end)(),
+        ["r"] = (function()
+          local _base_1 = self
+          local _fn_0 = _base_1.retry
+          return function(...)
+            return _fn_0(_base_1, ...)
+          end
+        end)()
+      }
+    end,
+    __base = _base_0,
+    __name = "UploadWithProgress",
+    __parent = _parent_0
+  }, {
+    __index = function(cls, name)
+      local val = rawget(_base_0, name)
+      if val == nil then
+        local parent = rawget(cls, "__parent")
+        if parent then
+          return parent[name]
+        end
+      else
+        return val
+      end
+    end,
+    __call = function(cls, ...)
+      local _self_0 = setmetatable({}, _base_0)
+      cls.__init(_self_0, ...)
+      return _self_0
+    end
+  })
+  _base_0.__class = _class_0
+  if _parent_0.__inherited then
+    _parent_0.__inherited(_parent_0, _class_0)
+  end
+  UploadWithProgress = _class_0
+end
 local get_active_tracks
 get_active_tracks = function()
   local accepted = {
@@ -1695,9 +2348,9 @@ get_fps_filters = function()
 end
 local get_contrast_brightness_and_saturation_filters
 get_contrast_brightness_and_saturation_filters = function()
-  local mpv_brightness = mp.get_property("brightness")
-  local mpv_contrast = mp.get_property("contrast")
-  local mpv_saturation = mp.get_property("saturation")
+  local mpv_brightness = mp.get_property_number("brightness", 0)
+  local mpv_contrast = mp.get_property_number("contrast", 0)
+  local mpv_saturation = mp.get_property_number("saturation", 0)
   if mpv_brightness == 0 and mpv_contrast == 0 and mpv_saturation == 0 then
     return { }
   end
@@ -1734,26 +2387,103 @@ end
 local get_playback_options
 get_playback_options = function()
   local ret = { }
-  append_property(ret, "sub-ass-override")
-  append_property(ret, "sub-ass-force-style")
-  append_property(ret, "sub-ass-vsfilter-aspect-compat")
-  append_property(ret, "sub-auto")
-  append_property(ret, "sub-pos")
-  append_property(ret, "sub-delay")
   append_property(ret, "video-rotate")
   append_property(ret, "ytdl-format")
   append_property(ret, "deinterlace")
   return ret
 end
-local get_speed_flags
-get_speed_flags = function()
+local get_sub_options
+get_sub_options = function()
   local ret = { }
-  local speed = mp.get_property_native("speed")
-  if speed ~= 1 then
+  append_property(ret, "sub-ass-override")
+  append_property(ret, "sub-ass-style-overrides")
+  append_property(ret, "sub-ass-use-video-data")
+  append_property(ret, "sub-auto")
+  append_property(ret, "sub-pos")
+  append_property(ret, "sub-scale")
+  append_property(ret, "sub-font")
+  append_property(ret, "sub-font-size")
+  append_property(ret, "sub-bold")
+  append_property(ret, "sub-italic")
+  append_property(ret, "sub-color")
+  append_property(ret, "sub-back-color")
+  append_property(ret, "sub-border-color")
+  append_property(ret, "sub-border-size")
+  append_property(ret, "sub-shadow-color")
+  append_property(ret, "sub-shadow-offset")
+  append_property(ret, "sub-use-margins")
+  append_property(ret, "sub-margin-x")
+  append_property(ret, "sub-margin-y")
+  append_property(ret, "sub-align-x")
+  append_property(ret, "sub-align-y")
+  append_property(ret, "sub-spacing")
+  append_property(ret, "sub-justify")
+  append_property(ret, "sub-gauss")
+  append_property(ret, "sub-gray")
+  return ret
+end
+local encode_times
+encode_times = function(startTime, endTime, speed)
+  local outputDuration = (endTime - startTime) / speed
+  return {
+    sourceStart = startTime,
+    sourceEnd = endTime,
+    speed = speed,
+    encoderStart = startTime,
+    encoderEnd = startTime + outputDuration,
+    outputDuration = outputDuration
+  }
+end
+local get_speed_video_flags
+get_speed_video_flags = function(times)
+  if times.speed == 1 then
+    return { }
+  end
+  return {
+    "--vf-add=trim=start=" .. tostring(times.sourceStart) .. ":end=" .. tostring(times.sourceEnd),
+    "--vf-add=setpts=(PTS-" .. tostring(times.sourceStart) .. "/TB)/" .. tostring(times.speed),
+    "--vf-add=setpts=PTS+" .. tostring(times.sourceStart) .. "/TB"
+  }
+end
+local get_speed_audio_flags
+get_speed_audio_flags = function(times)
+  if times.speed == 1 then
+    return { }
+  end
+  local atempo = { }
+  local tempo = times.speed
+  while tempo < 0.5 do
+    atempo[#atempo + 1] = "atempo=0.5"
+    tempo = tempo * 2
+  end
+  atempo[#atempo + 1] = "atempo=" .. tostring(tempo)
+  return {
+    "--af-add=atrim=start=" .. tostring(times.sourceStart) .. ":end=" .. tostring(times.sourceEnd),
+    "--af-add=asetpts=(PTS-" .. tostring(times.sourceStart) .. "/TB)/" .. tostring(times.speed),
+    "--af-add=" .. tostring(table.concat(atempo, ",")),
+    "--af-add=asetpts=PTS+" .. tostring(times.sourceStart) .. "/TB"
+  }
+end
+local get_sub_speed_flags
+get_sub_speed_flags = function(times, source_time)
+  if source_time == nil then
+    source_time = false
+  end
+  local sub_speed = mp.get_property_number("sub-speed", 1)
+  local sub_delay = mp.get_property_number("sub-delay", 0)
+  if times.speed ~= 1 and not source_time then
+    sub_speed = sub_speed * (1 / times.speed)
+    sub_delay = sub_delay / times.speed + times.sourceStart - times.sourceStart / times.speed
+  end
+  local ret = { }
+  if sub_speed ~= 1 then
     append(ret, {
-      "--vf-add=setpts=PTS/" .. tostring(speed),
-      "--af-add=atempo=" .. tostring(speed),
-      "--sub-speed=1/" .. tostring(speed)
+      "--sub-speed=" .. tostring(sub_speed)
+    })
+  end
+  if sub_delay ~= 0 then
+    append(ret, {
+      "--sub-delay=" .. tostring(sub_delay)
     })
   end
   return ret
@@ -1764,6 +2494,57 @@ get_metadata_flags = function()
   return {
     "--oset-metadata=title=%" .. tostring(string.len(title)) .. "%" .. tostring(title)
   }
+end
+local quote_filter_param
+quote_filter_param = function(value)
+  return "%" .. tostring(string.len(value)) .. "%" .. tostring(value)
+end
+local serialize_lavfi_filter
+serialize_lavfi_filter = function(filter)
+  local name = filter["name"]
+  local params = filter["params"] or { }
+  if name == "lavfi" then
+    local graph = params["graph"]
+    return graph and tostring(name) .. "=[" .. tostring(graph) .. "]" or name
+  end
+  local positional = { }
+  local named = { }
+  for key, value in pairs(params) do
+    local index = key:match("^@(%d+)$")
+    if index then
+      positional[tonumber(index) + 1] = value
+    else
+      named[key] = value
+    end
+  end
+  local args = { }
+  if #positional > 0 then
+    for _index_0 = 1, #positional do
+      local value = positional[_index_0]
+      append(args, {
+        value
+      })
+    end
+  else
+    local keys
+    do
+      local _accum_0 = { }
+      local _len_0 = 1
+      for key in pairs(named) do
+        _accum_0[_len_0] = key
+        _len_0 = _len_0 + 1
+      end
+      keys = _accum_0
+    end
+    table.sort(keys)
+    for _index_0 = 1, #keys do
+      local key = keys[_index_0]
+      append(args, {
+        tostring(key) .. "=" .. tostring(named[key])
+      })
+    end
+  end
+  return #args > 0 and tostring(name) .. "=" .. tostring(table.concat(args, ":")) or name
 end
 local apply_current_filters
 apply_current_filters = function(filters)
@@ -1780,8 +2561,12 @@ apply_current_filters = function(filters)
       end
       local str = filter["name"]
       local params = filter["params"] or { }
-      for k, v in pairs(params) do
-        str = str .. ":" .. tostring(k) .. "=%" .. tostring(string.len(v)) .. "%" .. tostring(v)
+      if str == "lavfi" or str:match("^lavfi%-") then
+        str = serialize_lavfi_filter(filter)
+      else
+        for k, v in pairs(params) do
+          str = str .. ":" .. tostring(k) .. "=" .. tostring(quote_filter_param(v))
+        end
       end
       append(filters, {
         str
@@ -1807,14 +2592,17 @@ get_video_filters = function(format, region)
   end
   append(filters, get_scale_filters())
   append(filters, get_fps_filters())
-  append(filters, get_contrast_brightness_and_saturation_filters())
+  if options.apply_current_filters then
+    append(filters, get_contrast_brightness_and_saturation_filters())
+  end
   append(filters, format:getPostFilters())
   return filters
 end
 local get_video_encode_flags
-get_video_encode_flags = function(format, region)
+get_video_encode_flags = function(format, region, times)
   local flags = { }
   append(flags, get_playback_options())
+  append(flags, get_sub_options())
   local filters = get_video_filters(format, region)
   for _index_0 = 1, #filters do
     local f = filters[_index_0]
@@ -1822,7 +2610,10 @@ get_video_encode_flags = function(format, region)
       "--vf-add=" .. tostring(f)
     })
   end
-  append(flags, get_speed_flags())
+  if not format.handlesSpeedInFilterGraph then
+    append(flags, get_speed_video_flags(times))
+  end
+  append(flags, get_sub_speed_flags(times, format.rendersSubtitlesInSourceTime))
   return flags
 end
 local calculate_bitrate
@@ -1865,22 +2656,56 @@ find_path = function(startTime, endTime)
   end
   return path, is_stream, is_temporary, startTime, endTime
 end
+local check_encoder
+check_encoder = function()
+  local result = utils.subprocess({
+    args = {
+      "mpv",
+      "--no-config",
+      "--version"
+    },
+    cancellable = false
+  })
+  if result.status == 0 then
+    return true
+  end
+  local explanation = "Cannot start the mpv encoder. Add the folder containing mpv to PATH, then restart the player. See README: Encoder executable."
+  if result.status and result.status > 0 then
+    explanation = "The mpv encoder failed its startup check. Run mpv --version and check the logs for details."
+  end
+  msg.error(explanation)
+  msg.error("Encoder startup check: ", result.error or "", result.stderr or "", result.stdout or "")
+  message(explanation, 10)
+  emit_event("encode-finished", "fail", explanation)
+  return false
+end
 local encode
-encode = function(region, startTime, endTime)
+encode = function(region, startTime, endTime, onDone)
   local format = formats[options.output_format]
+  if not check_encoder() then
+    if onDone then
+      onDone(false)
+    end
+    return 
+  end
   local originalStartTime = startTime
   local originalEndTime = endTime
   local path, is_stream, is_temporary
   path, is_stream, is_temporary, startTime, endTime = find_path(startTime, endTime)
   if not path then
     message("No file is being played")
+    if onDone then
+      onDone(false)
+    end
     return 
   end
+  local speed = mp.get_property_native("speed") or 1
+  local times = encode_times(startTime, endTime, speed)
   local command = {
     "mpv",
     path,
-    "--start=" .. seconds_to_time_string(startTime, false, true),
-    "--end=" .. seconds_to_time_string(endTime, false, true),
+    "--start=" .. seconds_to_time_string(times.encoderStart, false, true),
+    "--end=" .. seconds_to_time_string(times.encoderEnd, false, true),
     "--loop-file=no",
     "--no-pause"
   }
@@ -1925,7 +2750,10 @@ encode = function(region, startTime, endTime)
     end
   end
   if format.videoCodec ~= "" then
-    append(command, get_video_encode_flags(format, region))
+    append(command, get_video_encode_flags(format, region, times))
+  end
+  if format.audioCodec ~= "" then
+    append(command, get_speed_audio_flags(times))
   end
   append(command, format:getFlags())
   if options.write_filename_on_metadata then
@@ -1933,7 +2761,7 @@ encode = function(region, startTime, endTime)
   end
   if format.acceptsBitrate then
     if options.target_filesize > 0 then
-      local length = endTime - startTime
+      local length = times.outputDuration
       local video_bitrate, audio_bitrate = calculate_bitrate(supported_active_tracks, format, length)
       if video_bitrate then
         append(command, {
@@ -1947,9 +2775,10 @@ encode = function(region, startTime, endTime)
       end
       if options.strict_filesize_constraint then
         local type = format.videoCodec ~= "" and "ovc" or "oac"
+        local strict_bitrate = format.videoCodec ~= "" and video_bitrate or audio_bitrate
         append(command, {
-          "--" .. tostring(type) .. "opts-add=minrate=" .. tostring(bitrate) .. "k",
-          "--" .. tostring(type) .. "opts-add=maxrate=" .. tostring(bitrate) .. "k"
+          "--" .. tostring(type) .. "opts-add=minrate=" .. tostring(strict_bitrate) .. "k",
+          "--" .. tostring(type) .. "opts-add=maxrate=" .. tostring(strict_bitrate) .. "k"
         })
       end
     else
@@ -1982,13 +2811,14 @@ encode = function(region, startTime, endTime)
   if options.output_directory ~= "" then
     dir = parse_directory(options.output_directory)
   end
-  local formatted_filename = format_filename(originalStartTime, originalEndTime, format)
+  local formatted_filename = format_filename(originalStartTime, originalEndTime, format, dir)
   local out_path = utils.join_path(dir, formatted_filename)
   append(command, {
     "--o=" .. tostring(out_path)
   })
   emit_event("encode-started")
-  if options.twopass and format.supportsTwopass and not is_stream then
+  local constant_quality_x26x = options.target_filesize <= 0 and (format.videoCodec == "libx264" or format.videoCodec == "libx265")
+  if options.twopass and format.supportsTwopass and not constant_quality_x26x and not is_stream then
     local first_pass_cmdline
     do
       local _accum_0 = { }
@@ -2012,6 +2842,9 @@ encode = function(region, startTime, endTime)
     if not res then
       message("First pass failed! Check the logs for details.")
       emit_event("encode-finished", "fail")
+      if onDone then
+        onDone(false)
+      end
       return 
     end
     append(command, {
@@ -2019,13 +2852,13 @@ encode = function(region, startTime, endTime)
     })
     if format.videoCodec == "libvpx" then
       msg.verbose("Patching libvpx pass log file...")
-      vp8_patch_logfile(get_pass_logfile_path(out_path), endTime - startTime)
+      vp8_patch_logfile(get_pass_logfile_path(out_path), times.outputDuration)
     end
   end
-  command = format:postCommandModifier(command, region, startTime, endTime)
+  command = format:postCommandModifier(command, region, times)
   msg.info("Encoding to", out_path)
   msg.verbose("Command line:", table.concat(command, " "))
-  if options.run_detached then
+  if options.run_detached and not onDone then
     message("Started encode, process was detached.")
     return utils.subprocess_detached({
       args = command
@@ -2039,17 +2872,28 @@ encode = function(region, startTime, endTime)
         cancellable = false
       })
     else
-      local ewp = EncodeWithProgress(startTime, endTime)
+      local ewp = EncodeWithProgress(times.encoderStart, times.encoderEnd)
       res = ewp:startEncode(command)
     end
     if res then
       message("Encoded successfully! Saved to\\N" .. tostring(bold(out_path)))
       emit_event("encode-finished", "success")
+      if options.completion_command ~= "" then
+        mp.command(options.completion_command:gsub("%%{output}", out_path))
+      end
+      if onDone then
+        onDone(true, out_path)
+      end
     else
       message("Encode failed! Check the logs for details.")
       emit_event("encode-finished", "fail")
+      if onDone then
+        onDone(false)
+      end
     end
     os.remove(get_pass_logfile_path(out_path))
+    os.remove("x264_2pass.log")
+    os.remove("x264_2pass.log.mbtree")
     if is_temporary then
       return os.remove(path)
     end
@@ -2060,6 +2904,10 @@ do
   local _class_0
   local _parent_0 = Page
   local _base_0 = {
+    show = function(self)
+      _class_0.__parent.show(self)
+      return emit_event("show-crop-page")
+    end,
     reset = function(self)
       local dimensions = get_video_dimensions()
       local xa, ya
@@ -2081,6 +2929,7 @@ do
     setPointA = function(self)
       local posX, posY = mp.get_mouse_pos()
       self.pointA:set_from_screen(posX, posY)
+      emit_event("crop-point-a", tostring(self.pointA.x), tostring(self.pointA.y))
       if self.visible then
         return self:draw()
       end
@@ -2088,6 +2937,7 @@ do
     setPointB = function(self)
       local posX, posY = mp.get_mouse_pos()
       self.pointB:set_from_screen(posX, posY)
+      emit_event("crop-point-b", tostring(self.pointB.x), tostring(self.pointB.y))
       if self.visible then
         return self:draw()
       end
@@ -2507,7 +3357,25 @@ do
             "source"
           },
           {
+            4
+          },
+          {
+            8
+          },
+          {
+            10
+          },
+          {
+            12
+          },
+          {
             15
+          },
+          {
+            16
+          },
+          {
+            20
           },
           {
             24
@@ -2525,6 +3393,9 @@ do
             60
           },
           {
+            90
+          },
+          {
             120
           },
           {
@@ -2539,6 +3410,7 @@ do
         "avc",
         "avc-nvenc",
         "webm-vp8",
+        "webp",
         "gif",
         "mp3",
         "raw"
@@ -2557,6 +3429,9 @@ do
           end
           return _accum_0
         end)()
+      }
+      local uploadHostOpts = {
+        possibleValues = upload_host_possible_values()
       }
       local gifDitherOpts = {
         possibleValues = {
@@ -2594,6 +3469,12 @@ do
         {
           "output_format",
           Option("list", "Output Format", options.output_format, formatOpts)
+        },
+        {
+          "upload_host",
+          Option("list", "Upload Destination", options.upload_host, uploadHostOpts, function()
+            return is_upload_available()
+          end)
         },
         {
           "twopass",
@@ -2717,9 +3598,6 @@ do
   local _base_0 = {
     prepare = function(self)
       local vf = mp.get_property_native("vf")
-      vf[#vf + 1] = {
-        name = "sub"
-      }
       if self.region:is_valid() then
         vf[#vf + 1] = {
           name = "crop",
@@ -2731,6 +3609,9 @@ do
           }
         }
       end
+      vf[#vf + 1] = {
+        name = "sub"
+      }
       mp.set_property_native("vf", vf)
       if self.startTime > -1 and self.endTime > -1 then
         mp.set_property_native("ab-loop-a", self.startTime)
@@ -2829,6 +3710,12 @@ do
         return self:draw()
       end
     end,
+    jumpToStartTime = function(self)
+      return mp.set_property("time-pos", self.startTime)
+    end,
+    jumpToEndTime = function(self)
+      return mp.set_property("time-pos", self.endTime)
+    end,
     setupStartAndEndTimes = function(self)
       if mp.get_property_native("duration") then
         self.startTime = 0
@@ -2851,9 +3738,15 @@ do
       ass:append(tostring(bold('c:')) .. " crop\\N")
       ass:append(tostring(bold('1:')) .. " set start time (current is " .. tostring(seconds_to_time_string(self.startTime)) .. ")\\N")
       ass:append(tostring(bold('2:')) .. " set end time (current is " .. tostring(seconds_to_time_string(self.endTime)) .. ")\\N")
+      ass:append(tostring(bold('!:')) .. " jump to start time\\N")
+      ass:append(tostring(bold('@:')) .. " jump to end time\\N")
       ass:append(tostring(bold('o:')) .. " change encode options\\N")
       ass:append(tostring(bold('p:')) .. " preview\\N")
-      ass:append(tostring(bold('e:')) .. " encode\\N\\N")
+      ass:append(tostring(bold('e:')) .. " encode\\N")
+      if is_upload_available() then
+        ass:append(tostring(bold('u:')) .. " encode & upload\\N")
+      end
+      ass:append("\\N")
       ass:append(tostring(bold('ESC:')) .. " close\\N")
       return mp.set_osd_ass(window_w, window_h, ass.text)
     end,
@@ -2906,6 +3799,53 @@ do
       end)(), self.region, self.startTime, self.endTime)
       return previewPage:show()
     end,
+    onEncodedForUpload = function(self, success, outPath)
+      if not success or not outPath then
+        self:show()
+        return 
+      end
+      local uploadPage = UploadWithProgress((function()
+        local _base_1 = self
+        local _fn_0 = _base_1.onUploadEnded
+        return function(...)
+          return _fn_0(_base_1, ...)
+        end
+      end)(), outPath)
+      return uploadPage:show()
+    end,
+    onUploadEnded = function(self, state)
+      if state == "options" then
+        return self:changeOptions()
+      else
+        return self:show()
+      end
+    end,
+    upload = function(self)
+      if not is_upload_available() then
+        message("Uploads need curl on PATH. Set upload_curl_path in webm.conf.")
+        return 
+      end
+      if self.startTime < 0 then
+        message("No start time, aborting")
+        return 
+      end
+      if self.endTime < 0 then
+        message("No end time, aborting")
+        return 
+      end
+      if self.startTime >= self.endTime then
+        message("Start time is ahead of end time, aborting")
+        return 
+      end
+      self:hide()
+      return encode(self.region, self.startTime, self.endTime, (function()
+        local _base_1 = self
+        local _fn_0 = _base_1.onEncodedForUpload
+        return function(...)
+          return _fn_0(_base_1, ...)
+        end
+      end)())
+    end,
     encode = function(self)
       self:hide()
       if self.startTime < 0 then
@@ -2949,6 +3889,20 @@ do
             return _fn_0(_base_1, ...)
           end
         end)(),
+        ["!"] = (function()
+          local _base_1 = self
+          local _fn_0 = _base_1.jumpToStartTime
+          return function(...)
+            return _fn_0(_base_1, ...)
+          end
+        end)(),
+        ["@"] = (function()
+          local _base_1 = self
+          local _fn_0 = _base_1.jumpToEndTime
+          return function(...)
+            return _fn_0(_base_1, ...)
+          end
+        end)(),
         ["o"] = (function()
           local _base_1 = self
           local _fn_0 = _base_1.changeOptions
@@ -2966,6 +3920,13 @@ do
         ["e"] = (function()
           local _base_1 = self
           local _fn_0 = _base_1.encode
+          return function(...)
+            return _fn_0(_base_1, ...)
+          end
+        end)(),
+        ["u"] = (function()
+          local _base_1 = self
+          local _fn_0 = _base_1.upload
           return function(...)
             return _fn_0(_base_1, ...)
           end
@@ -3011,6 +3972,7 @@ do
 end
 monitor_dimensions()
 local mainPage = MainPage()
+register_test_handlers(mainPage)
 mp.add_key_binding(options.keybind, "display-webm-encoder", (function()
   local _base_0 = mainPage
   local _fn_0 = _base_0.show

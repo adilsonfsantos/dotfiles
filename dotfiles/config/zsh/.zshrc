@@ -111,7 +111,6 @@ setopt AUTOCD DOT_GLOB EXTENDED_GLOB
 
 fpath+=(
 	"$ZDOTDIR/functions"
-	"${fpath[@]}"
 	)
 
 FUNCTIONS_DIR="$ZDOTDIR/functions"
@@ -140,4 +139,3 @@ done
 # Load completions and plugin sources
 [[ -f $ZDOTDIR/config/.zsh_completions ]] && source $ZDOTDIR/config/.zsh_completions
 [[ -f $ZDOTDIR/config/.zsh_plugins ]] && source $ZDOTDIR/config/.zsh_plugins
-
